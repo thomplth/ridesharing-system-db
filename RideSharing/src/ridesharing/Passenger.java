@@ -6,67 +6,68 @@
 package ridesharing;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Pattern;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
 /**
  *
  * @author 
  */
 public class Passenger {
+    boolean passenger_output = false;
 
     public Passenger(Connection conn){
         Scanner sc = new Scanner(System.in);
         int user_choice = 1;
+        int user_id = 0;
         System.out.println("Please enter [1-3].");
 
         try{
             user_choice = sc.nextInt();
-            sc.close();
-            if(user_choice != 1 || user_choice != 2 || user_choice != 3){
+            if(user_choice != 1 && user_choice != 2 && user_choice != 3){
                 throw new Exception("Wrong choice!");
             }
+
+            System.out.println("Please enter your ID.");
+            user_id = sc.nextInt();
+            if(user_id < 0){
+                throw new Exception("Wrong ID!");
+            }
         }catch(Exception e){
-            e.printStackTrace();
+           System.out.println(e.getMessage());
+        }finally{
+            sc.close();
         }
 
         switch(user_choice){
             case 1:
-                requestRide(conn);
+                requestRide(conn,user_id);
                 break;
             case 2:
+                checkTrip(conn,user_id);
                 break;
             case 3:
-                break;
+                return;
             default:
                 return;
         }
-
     }
 
-    public void requestRide(Connection conn){
+    public void requestRide(Connection conn, int user_id){
         Scanner sc = new Scanner(System.in);
-        int user_id = 0;
         int passenger_num = 0;
         String start_location = "";
         String end_location = "";
         String car_model = "";
         int driver_years = 0;
 
-        System.out.println("Passenger, what would you like to do?\n1. Request a ride\n2. Check trip records\n3.Go back");
-        try{
-
-            
-            System.out.println("Please enter your ID.");
-            user_id = sc.nextInt();
-            if(user_id < 0){
-                throw new Exception("Wrong ID!");
-            }
-
+        try{          
             System.out.println("Please enter the number of passengers.");
             passenger_num = sc.nextInt();
+            sc.nextLine();
             if(passenger_num < 1 || passenger_num > 8){
                 throw new Exception("Wrong number of passengers!");
             }
@@ -91,9 +92,14 @@ public class Passenger {
             if(driver_years < 0){
                 throw new Exception("Wrong driver years!");
             }
+            System.out.println("All input received. Querying Database.");
 
+        }catch(NumberFormatException nfe){
+            System.out.println("Please enter a number");
         }catch(Exception e){
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }finally{
+            sc.close();
         }
         ArrayList<String> error_message = new ArrayList<String>();
 
@@ -161,7 +167,7 @@ public class Passenger {
 
         // At last, create the request if no errors exist
 
-            psql = "SELECT COUNT(*) AS d_count FROM drivers d, vehicles v WHERE v.seats >= ? AND driving_years >= ? AND UPPER(model) LIKE UPPER('%?%') AND d.vehicle_id = v.id;";
+            psql = "SELECT COUNT(*) AS d_count FROM driver d, vehicle v WHERE v.seats >= ? AND driving_years >= ? AND UPPER(model) LIKE UPPER('%?%') AND d.vehicle_id = v.id;";
             pstmt = conn.prepareStatement(psql);
             pstmt.setInt(1, passenger_num);
             pstmt.setInt(2, driver_years);
@@ -188,7 +194,76 @@ public class Passenger {
         }catch(SQLException sqle){
             sqle.printStackTrace();
         }
-
+        passenger_output = true;
         return;
+    }
+
+    public void checkTrip(Connection conn, int user_id){
+        Scanner sc = new Scanner(System.in);
+        String start_date = "";
+        String end_date = "";
+        String end_location = "";
+
+        Pattern date = Pattern.compile("[1-2][0-9][0-9][0-9]-(0[1-9]|1[0-2])-([1-9]|[12][0-9]|3[01])");
+
+        try{          
+            System.out.println("Please enter the start date. (YYYY-MM-DD)");
+            start_date = sc.nextLine();
+            if(start_date == "" || start_date == null || !date.matcher(start_date).matches()){
+                throw new Exception("Wrong start location!");
+            }
+
+            System.out.println("Please enter the end date. (YYYY-MM-DD)");
+            end_date = sc.nextLine();
+            if(end_date == "" || end_date == null || !date.matcher(start_date).matches()){
+                throw new Exception("Wrong end date!");
+            }
+
+            System.out.println("Please enter the destination.");
+            end_location = sc.nextLine();
+            if(end_location == "" || end_location == null){
+                throw new Exception("Wrong end location!");
+            }
+
+            System.out.println("All input received. Querying Database.");
+
+        }catch(NumberFormatException nfe){
+            System.out.println("Error: Please enter a number.");
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }finally{
+            sc.close();
+        }
+
+        String psql = "SELECT t.id,d.name,v.id,v.model,t.* FROM trip t WHERE t.passenger_id = ? AND t.start_date >= ? AND t.end_date >= ? AND t.destination = ? AND t.driver_id = d.id AND d.vehicle_id = v.id);";
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+        try{
+            pstmt = conn.prepareStatement(psql);
+            pstmt.setInt(1, user_id);
+            pstmt.setString(2, start_date);
+            pstmt.setString(3, end_date);
+            pstmt.setString(4, end_location);
+            rs = pstmt.executeQuery();
+
+            if(!rs.next()){
+                System.out.println("There are no trips matching your criteria");
+            }else{
+                System.out.println("Trip_ID, Driver Name, Vehicle ID, Vehicle Model, Start, End, Fee, Start Location, Destination");
+                do{
+                    System.out.println(String.format("%d, %s, %s, %s, %s, %s, %d, %s, %s", 
+                                                rs.getInt("t.id"), rs.getString("d.name"), rs.getInt("v.id"),rs.getString("v.model"),
+                                                rs.getString("t.start_time"),rs.getString("t.end_time"),rs.getInt("t.fee"),
+                                                rs.getString("t.start_location"),rs.getString("t.destination")));
+                }while(rs.next());
+            }
+
+        }catch(Exception e){
+            System.out.println("Something was wrong with the SQL query");
+        }
+        passenger_output = true;
+    }
+    public boolean getPassenger_output() {
+        return passenger_output;
     }
 }
