@@ -1,6 +1,5 @@
 package ridesharing;
 
-import java.util.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
@@ -86,12 +85,34 @@ public class SystemAdministrator {
 
             System.out.print("Done! Tables are created!");
         } catch(Exception e) {
-            System.out.println("\nError occured in admin operation: " + e);
+            System.out.println("\nError occured in creating tables: " + e);
         }
     }
 
     public void deleteTables() {
+        System.out.print("Processing...");
+        
+        try {
+            String stmt = "DROP TABLE IF EXISTS ";
+            PreparedStatement pstmt;
+            
+            pstmt = conn.prepareStatement(stmt + "driver");
+            pstmt.execute();
+            pstmt = conn.prepareStatement(stmt + "vehicle");
+            pstmt.execute();
+            pstmt = conn.prepareStatement(stmt + "passenger");
+            pstmt.execute();
+            pstmt = conn.prepareStatement(stmt + "request");
+            pstmt.execute();
+            pstmt = conn.prepareStatement(stmt + "trip");
+            pstmt.execute();
+            pstmt = conn.prepareStatement(stmt + "taxi_stop");
+            pstmt.execute();
 
+            System.out.print("Done! Tables are deleted!");
+        } catch(Exception e) {
+            System.out.println("\nError occured in deleting tables: " + e);
+        }
     }
 
     public void loadData() {
