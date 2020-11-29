@@ -1,11 +1,9 @@
 package ridesharing;
 
 import java.util.Scanner;
-
-import javax.naming.spi.DirStateFactory.Result;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
