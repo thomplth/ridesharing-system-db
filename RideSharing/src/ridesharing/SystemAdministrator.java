@@ -1,5 +1,9 @@
 package ridesharing;
 
+import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
@@ -83,9 +87,9 @@ public class SystemAdministrator {
             pstmt = conn.prepareStatement(stmt);
             pstmt.executeUpdate();
 
-            System.out.print("Done! Tables are created!");
+            System.out.println("Done! Tables are created!");
         } catch(Exception e) {
-            System.out.println("\nError occured in creating tables: " + e);
+            System.out.println("\nError occured when creating tables: " + e);
         }
     }
 
@@ -109,17 +113,135 @@ public class SystemAdministrator {
             pstmt = conn.prepareStatement(stmt + "taxi_stop");
             pstmt.execute();
 
-            System.out.print("Done! Tables are deleted!");
+            System.out.println("Done! Tables are deleted!");
         } catch(Exception e) {
-            System.out.println("\nError occured in deleting tables: " + e);
+            System.out.println("\nError occured when deleting tables: " + e);
         }
     }
 
     public void loadData() {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter the folder path");
         
+        try {
+            String path = scan.nextLine();
+            System.out.print("Processing...");
+
+            loadDrivers(path);
+            loadVehicles(path);
+            loadPassengers(path);
+            loadTrips(path);
+            loadTaxiStops(path);
+
+            System.out.println("Data is loaded!");
+        } catch(Exception e) {
+            System.out.println("\nError occured when loading data: " + e);
+        }
     }
 
     public void checkData() {
         
     }
+
+    private void loadDrivers(String path) {
+        BufferedReader csv = new BufferedReader(new FileReader(path + "/drivers.csv"));
+        String line, data[];
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO driver VALUES (?, ?, ?, ?)");
+        
+        while((line = csv.readLine()) != null) {
+            data = line.split(",");
+            for(int i = 1; i <= data.length; i++) {
+                pstmt.setString(i, data[i-1]);
+            }
+            pstmt.execute();
+        }
+        csv.close();
+    }
+
+    private void loadVehicles(String path) {
+        BufferedReader csv = new BufferedReader(new FileReader(path + "/vehicles.csv"));
+        String line, data[];
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO vehicles VALUES (?, ?, ?)");
+        
+        while((line = csv.readLine()) != null) {
+            data = line.split(",");
+            for(int i = 1; i <= data.length; i++) {
+                pstmt.setString(i, data[i-1]);
+            }
+            pstmt.execute();
+        }
+        csv.close();
+    }
+
+    private void loadPassengers(String path) {
+        BufferedReader csv = new BufferedReader(new FileReader(path + "/passengers.csv"));
+        String line, data[];
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO vehicles VALUES (?, ?)");
+        
+        while((line = csv.readLine()) != null) {
+            data = line.split(",");
+            for(int i = 1; i <= data.length; i++) {
+                pstmt.setString(i, data[i-1]);
+            }
+            pstmt.execute();
+        }
+        csv.close();
+    }
+
+    private void loadTrips(String path) {
+        BufferedReader csv = new BufferedReader(new FileReader(path + "/trips.csv"));
+        String line, data[];
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO driver VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        
+        while((line = csv.readLine()) != null) {
+            data = line.split(",");
+            for(int i = 1; i <= data.length; i++) {
+                pstmt.setString(i, data[i-1]);
+            }
+            pstmt.execute();
+        }
+        csv.close();
+    }
+
+    private void loadTaxiStops(String path) {
+        BufferedReader csv = new BufferedReader(new FileReader(path + "/taxi_stops.csv"));
+        String line, data[];
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO taxi_stops VALUES (?, ?, ?)");
+        
+        while((line = csv.readLine()) != null) {
+            data = line.split(",");
+            for(int i = 1; i <= data.length; i++) {
+                pstmt.setString(i, data[i-1]);
+            }
+            pstmt.execute();
+        }
+        csv.close();
+    }
 }
+
+/*
+BufferedReader csvReader = new BufferedReader(new FileReader(pathToCsv));
+while ((row = csvReader.readLine()) != null) {
+    String[] data = row.split(",");
+    // do something with the data
+}
+csvReader.close();
+
+public static void main(String[] args)   
+{  
+String line = "";  
+String splitBy = ",";  
+try   
+{  
+BufferedReader br = new BufferedReader(new FileReader("CSVDemo.csv"));  
+while ((line = br.readLine()) != null)   //returns a Boolean value  
+{  
+String[] employee = line.split(splitBy);    // use comma as separator  
+System.out.println("Employee [First Name=" + employee[0] + ", Last Name=" + employee[1] + ", Designation=" + employee[2] + ", Contact=" + employee[3] + ", Salary= " + employee[4] + ", City= " + employee[5] +"]");  
+}  
+}   
+catch (IOException e)   
+{  
+e.printStackTrace();  
+}  
+*/
