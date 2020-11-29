@@ -145,11 +145,11 @@ public class SystemAdministrator {
 
     private void loadDrivers(String path) {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/drivers.csv"));
-        String line, data[];
+        String line;
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO driver VALUES (?, ?, ?, ?)");
         
         while((line = csv.readLine()) != null) {
-            data = line.split(",");
+            String data[] = line.split(",");
             for(int i = 1; i <= data.length; i++) {
                 pstmt.setString(i, data[i-1]);
             }
@@ -160,11 +160,11 @@ public class SystemAdministrator {
 
     private void loadVehicles(String path) {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/vehicles.csv"));
-        String line, data[];
+        String line;
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO vehicles VALUES (?, ?, ?)");
         
         while((line = csv.readLine()) != null) {
-            data = line.split(",");
+            String data[] = line.split(",");
             for(int i = 1; i <= data.length; i++) {
                 pstmt.setString(i, data[i-1]);
             }
@@ -175,11 +175,11 @@ public class SystemAdministrator {
 
     private void loadPassengers(String path) {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/passengers.csv"));
-        String line, data[];
+        String line;
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO vehicles VALUES (?, ?)");
         
         while((line = csv.readLine()) != null) {
-            data = line.split(",");
+            String data[] = line.split(",");
             for(int i = 1; i <= data.length; i++) {
                 pstmt.setString(i, data[i-1]);
             }
@@ -190,11 +190,11 @@ public class SystemAdministrator {
 
     private void loadTrips(String path) {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/trips.csv"));
-        String line, data[];
+        String line;
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO driver VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         
         while((line = csv.readLine()) != null) {
-            data = line.split(",");
+            String data[] = line.split(",");
             for(int i = 1; i <= data.length; i++) {
                 pstmt.setString(i, data[i-1]);
             }
@@ -205,11 +205,11 @@ public class SystemAdministrator {
 
     private void loadTaxiStops(String path) {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/taxi_stops.csv"));
-        String line, data[];
+        String line;
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO taxi_stops VALUES (?, ?, ?)");
         
         while((line = csv.readLine()) != null) {
-            data = line.split(",");
+            String data[] = line.split(",");
             for(int i = 1; i <= data.length; i++) {
                 pstmt.setString(i, data[i-1]);
             }
