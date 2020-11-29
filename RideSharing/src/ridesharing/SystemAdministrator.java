@@ -1,14 +1,18 @@
 package ridesharing;
 
 import java.util.Scanner;
+
+import javax.naming.spi.DirStateFactory.Result;
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class SystemAdministrator {
     private Connection conn;
+    private final String tables[] = {"driver", "vehicle", "passenger", "request", "trip", "taxi_stop"};
 
     public SystemAdministrator(Connection c) {
         conn = c;
@@ -100,18 +104,10 @@ public class SystemAdministrator {
             String stmt = "DROP TABLE IF EXISTS ";
             PreparedStatement pstmt;
             
-            pstmt = conn.prepareStatement(stmt + "driver");
-            pstmt.execute();
-            pstmt = conn.prepareStatement(stmt + "vehicle");
-            pstmt.execute();
-            pstmt = conn.prepareStatement(stmt + "passenger");
-            pstmt.execute();
-            pstmt = conn.prepareStatement(stmt + "request");
-            pstmt.execute();
-            pstmt = conn.prepareStatement(stmt + "trip");
-            pstmt.execute();
-            pstmt = conn.prepareStatement(stmt + "taxi_stop");
-            pstmt.execute();
+            for(int i = 0; i < tables.length; i++) {
+                pstmt = conn.prepareStatement(stmt + tables[i]);
+                pstmt.execute();
+            }
 
             System.out.println("Done! Tables are deleted!");
         } catch(Exception e) {
@@ -130,6 +126,7 @@ public class SystemAdministrator {
             loadDrivers(path);
             loadVehicles(path);
             loadPassengers(path);
+            // no request is yet created
             loadTrips(path);
             loadTaxiStops(path);
 
@@ -140,7 +137,25 @@ public class SystemAdministrator {
     }
 
     public void checkData() {
-        
+        try {
+            int counts[] = new int[6];
+            String stmt = "SELECT COUNT(*) FROM ";
+            PreparedStatement pstmt;
+
+            for(int i = 0; i < tables.length; i++) {
+                pstmt = conn.prepareStatement(stmt + tables[i]);
+                ResultSet rs = pstmt.executeQuery();
+                rs.next();
+                counts[i] = rs.getInt("count(*)");
+            }
+
+            System.out.println("Numbers of records in each table:");
+            for(int i = 0; i < tables.length; i++) {
+                System.out.println(tables[i] + ": " + counts[i]);
+            }
+        } catch(Exception e) {
+            System.out.println("\nError occured when checking data: " + e);
+        }
     }
 
     private void loadDrivers(String path) {
