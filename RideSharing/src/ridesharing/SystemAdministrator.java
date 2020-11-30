@@ -3,10 +3,11 @@ package ridesharing;
 import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.FileReader;
-
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class SystemAdministrator {
     private Connection conn;
@@ -97,18 +98,18 @@ public class SystemAdministrator {
 
     public void deleteTables() {
         System.out.print("Processing...");
-        
+
         try {
             String stmt = "DROP TABLE IF EXISTS ";
             PreparedStatement pstmt;
-            
-            for(int i = 0; i < tables.length; i++) {
+
+            for (int i = 0; i < tables.length; i++) {
                 pstmt = conn.prepareStatement(stmt + tables[i]);
                 pstmt.execute();
             }
 
             System.out.println("Done! Tables are deleted!");
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("\nError occured when deleting tables: " + e);
         }
     }
@@ -116,7 +117,7 @@ public class SystemAdministrator {
     public void loadData() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please enter the folder path");
-        
+
         try {
             String path = scan.nextLine();
             System.out.print("Processing...");
@@ -128,8 +129,9 @@ public class SystemAdministrator {
             loadTrips(path);
             loadTaxiStops(path);
 
+            scan.close();
             System.out.println("Data is loaded!");
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("\nError occured when loading data: " + e);
         }
     }
@@ -140,7 +142,7 @@ public class SystemAdministrator {
             String stmt = "SELECT COUNT(*) FROM ";
             PreparedStatement pstmt;
 
-            for(int i = 0; i < tables.length; i++) {
+            for (int i = 0; i < tables.length; i++) {
                 pstmt = conn.prepareStatement(stmt + tables[i]);
                 ResultSet rs = pstmt.executeQuery();
                 rs.next();
@@ -148,60 +150,60 @@ public class SystemAdministrator {
             }
 
             System.out.println("Numbers of records in each table:");
-            for(int i = 0; i < tables.length; i++) {
+            for (int i = 0; i < tables.length; i++) {
                 System.out.println(tables[i] + ": " + counts[i]);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("\nError occured when checking data: " + e);
         }
     }
 
-    private void loadDrivers(String path) {
+    private void loadDrivers(String path) throws IOException, SQLException {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/drivers.csv"));
         String line;
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO driver VALUES (?, ?, ?, ?)");
-        
-        while((line = csv.readLine()) != null) {
+
+        while ((line = csv.readLine()) != null) {
             String data[] = line.split(",");
-            for(int i = 1; i <= data.length; i++) {
-                pstmt.setString(i, data[i-1]);
+            for (int i = 1; i <= data.length; i++) {
+                pstmt.setString(i, data[i - 1]);
             }
             pstmt.execute();
         }
         csv.close();
     }
 
-    private void loadVehicles(String path) {
+    private void loadVehicles(String path) throws SQLException, IOException {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/vehicles.csv"));
         String line;
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO vehicles VALUES (?, ?, ?)");
-        
-        while((line = csv.readLine()) != null) {
+
+        while ((line = csv.readLine()) != null) {
             String data[] = line.split(",");
-            for(int i = 1; i <= data.length; i++) {
-                pstmt.setString(i, data[i-1]);
+            for (int i = 1; i <= data.length; i++) {
+                pstmt.setString(i, data[i - 1]);
             }
             pstmt.execute();
         }
         csv.close();
     }
 
-    private void loadPassengers(String path) {
+    private void loadPassengers(String path) throws SQLException, IOException {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/passengers.csv"));
         String line;
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO vehicles VALUES (?, ?)");
-        
-        while((line = csv.readLine()) != null) {
+
+        while ((line = csv.readLine()) != null) {
             String data[] = line.split(",");
-            for(int i = 1; i <= data.length; i++) {
-                pstmt.setString(i, data[i-1]);
+            for (int i = 1; i <= data.length; i++) {
+                pstmt.setString(i, data[i - 1]);
             }
             pstmt.execute();
         }
         csv.close();
     }
 
-    private void loadTrips(String path) {
+    private void loadTrips(String path) throws SQLException, IOException {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/trips.csv"));
         String line;
         int order[] = {0, 1, 2, 5, 6, 3, 4, 7}; // special order corresponds to trips.csv
@@ -217,7 +219,7 @@ public class SystemAdministrator {
         csv.close();
     }
 
-    private void loadTaxiStops(String path) {
+    private void loadTaxiStops(String path) throws SQLException, IOException {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/taxi_stops.csv"));
         String line;
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO taxi_stops VALUES (?, ?, ?)");
