@@ -27,7 +27,7 @@ public class SystemAdministrator {
             stmt = "CREATE TABLE driver(" + 
             "id integer primary key," + 
             "name varchar(30) not null," + 
-            "vehicle_id varchar(6) not null," +
+            "vehicle_id char(6) not null," +
             "driving_years integer not null," + 
             "FOREIGN KEY(vehicle_id) REFERENCES vehicle(id))";
             pstmt = conn.prepareStatement(stmt);
@@ -35,7 +35,7 @@ public class SystemAdministrator {
 
             // vehicle table
             stmt = "CREATE TABLE vehicle(" + 
-            "id integer primary key," + 
+            "id char(6) primary key," + 
             "model varchar(30) not null," + 
             "seats integer not null)";
             pstmt = conn.prepareStatement(stmt);
@@ -71,8 +71,8 @@ public class SystemAdministrator {
             "passenger_id integer not null," +
             "start_location varchar(20) not null," +
             "destination varchar(20) not null," +
-            "start_time char(19) not null," + // java.time in “YYYY-MM-DD HH:mm:ss” format
-            "end_time char(19) not null," + // java.time in “YYYY-MM-DD HH:mm:ss” format
+            "start_time datetime not null," + // java.sql.Timestamp in “YYYY-MM-DD HH:mm:ss” format
+            "end_time datetime not null," + // java.sql.Timestamp in “YYYY-MM-DD HH:mm:ss” format
             "fee integer not null," +
             "FOREIGN KEY(driver_id) REFERENCES driver(id)," +
             "FOREIGN KEY(passenger_id) REFERENCES passenger(id)," +
@@ -204,12 +204,13 @@ public class SystemAdministrator {
     private void loadTrips(String path) {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/trips.csv"));
         String line;
+        int order[] = {0, 1, 2, 5, 6, 3, 4, 7}; // special order corresponds to trips.csv
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO driver VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         
         while((line = csv.readLine()) != null) {
             String data[] = line.split(",");
-            for(int i = 1; i <= data.length; i++) {
-                pstmt.setString(i, data[i-1]);
+            for(int i = 0; i < data.length; i++) {
+                pstmt.setString(order[i], data[i]);
             }
             pstmt.execute();
         }
