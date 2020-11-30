@@ -9,10 +9,9 @@ import java.sql.*;
 import java.util.*;
 
 public class Driver {
-    private Connection = conn;
+	private Connection conn;
 
-	public Driver (Connection c) 
-	{
+	public Driver(Connection c) {
 		conn = c;
 	}
 
@@ -112,4 +111,4 @@ public class Driver {
 		}catch (Exception e)
             System.out.println("Error: " + e); 
     }
-}    
+}
