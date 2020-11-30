@@ -121,5 +121,34 @@ public class Main {
 
 	public static void driver_menu(Driver driver) {}
 	
-	public static void manager_menu(Manager manager) {}
+	public static void manager_menu(Manager manager) {
+		int choice = 0;
+		Scanner scan = new Scanner(System.in);
+
+		while (choice != 2) {
+			System.out.println("Manager, what would you like to do?");
+			System.out.println("1. Find trips");
+			System.out.println("2. Go back");
+
+			while (true) {
+				try {
+					System.out.println("Please enter [1-2]");
+					choice = scan.nextInt();
+					if (choice < 1 || choice > 2)
+						throw new Exception();
+					break;
+				} catch (Exception e) {
+					System.out.println("[ERROR] Invalid input.");
+				}
+			}
+
+			switch (choice) {
+				case 1:
+					manager.listTrips();
+					break;
+				default:
+			}
+		}
+		scan.close();
+	}
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ridesharing;
 
 import java.sql.Connection;
@@ -12,40 +7,40 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
-/**
- *
- * @author 
- */
+
 public class Manager {
     boolean manager_output = false;
-    public Manager(Connection conn){
-        Scanner sc = new Scanner(System.in);
-        int user_choice = 1;
-        System.out.println("Please enter [1-2].");
+    private Connection conn;
 
-        try{
-            user_choice = sc.nextInt();
-            if(user_choice != 1 && user_choice != 2){
-                throw new Exception("Wrong choice!");
-            }
-        }catch(Exception e){
-           System.out.println(e.getMessage());
-        }finally{
-            sc.close();
-        }
+    public Manager(Connection c){
+        conn = c;
+        // Scanner sc = new Scanner(System.in);
+        // int user_choice = 1;
+        // System.out.println("Please enter [1-2].");
 
-        switch(user_choice){
-            case 1:
-                listTrips(conn);
-                break;
-            case 2:
-                break;
-            default:
-                return;
-        }
+        // try{
+        //     user_choice = sc.nextInt();
+        //     if(user_choice != 1 && user_choice != 2){
+        //         throw new Exception("[ERROR] Invalid input.");
+        //     }
+        // }catch(Exception e){
+        //    System.out.println(e.getMessage());
+        // }finally{
+        //     sc.close();
+        // }
+
+        // switch(user_choice){
+        //     case 1:
+        //         listTrips(conn);
+        //         break;
+        //     case 2:
+        //         break;
+        //     default:
+        //         return;
+        // }
     }
 
-    public void listTrips(Connection conn){
+    public void listTrips(){
         Scanner sc = new Scanner(System.in);
         int min_distance = 0;
         int max_distance = 0;
