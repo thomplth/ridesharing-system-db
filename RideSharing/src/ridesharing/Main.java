@@ -3,6 +3,9 @@ package ridesharing;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Scanner;
+import java.sql.Statement;
+
 
 public class Main {
     public static void main (String args[]){
@@ -17,7 +20,6 @@ public class Main {
                 Statement createDatabase = conn.createStatement();
                 Statement stmt = conn.createStatement();
                 stmt.executeUpdate("use group40;");
-                menu(conn);
                 conn.close();
             } catch(ClassNotFoundException ce){
                 System.out.println("Java DB Driver not found!");
@@ -54,17 +56,18 @@ public class Main {
 			System.out.println("[ERROR] Invalid input.");
 		}
 
-		if (choice == 1)
-			administrator(conn);
-		else if (choice == 2)
-			passenger(conn);
-		else if (choice == 3)
-			driver(conn);
-		else if (choice == 4)
-			manager(conn);
-		else
+		if (choice == 1){
+			// administrator(conn);
+		}else if (choice == 2){
+			Passenger passenger = new Passenger(conn);
+		}else if (choice == 3){
+			// driver(conn);
+		}else if (choice == 4){
+			Manager manager = new Manager(conn);
+		}
+		else{
 			System.out.println("Goodbye.");
-           
+		}   
     }
     
 }
