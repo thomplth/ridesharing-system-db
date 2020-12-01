@@ -46,10 +46,7 @@ public class Main {
 				} catch (Exception e) {
 					System.out.println("[ERROR] Invalid input.");
 					continue;
-				} finally {
-					scan.close();
 				}
-
 			switch (choice) {
 				case 1:
 					SystemAdministrator admin = new SystemAdministrator(conn);
@@ -57,7 +54,7 @@ public class Main {
 					break;
 				case 2:
 					Passenger passenger = new Passenger();
-					passenger_menu(passenger,conn);
+					passenger_menu(scan,passenger,conn);
 					break;
 				case 3:
 					Driver driver = new Driver(conn);
@@ -68,6 +65,7 @@ public class Main {
 					manager_menu(manager);
 					break;
 				default:
+				
 			}
 			choice = 0;
 		}
@@ -115,8 +113,7 @@ public class Main {
 		}
 	}
 
-	public static void passenger_menu(Passenger passenger, Connection conn) {
-		Scanner sc = new Scanner(System.in);
+	public static void passenger_menu(Scanner sc, Passenger passenger, Connection conn) {
         int user_choice = 1;
         int user_id = 0;
         System.out.println("Passenger, what would you like to do?");
@@ -129,25 +126,26 @@ public class Main {
             user_choice = sc.nextInt();
             if(user_choice != 1 && user_choice != 2 && user_choice != 3){
                 throw new Exception("Wrong choice!");
-            }
+			}
+			if(user_choice == 3){
+				return;
+			}
 
             System.out.println("Please enter your ID.");
-            user_id = sc.nextInt();
+			user_id = sc.nextInt();
             if(user_id < 0){
                 throw new Exception("Wrong ID!");
             }
         }catch(Exception e){
            System.out.println(e.getMessage());
-        }finally{
-            sc.close();
-		}
+        }
 		
 		switch(user_choice){
             case 1:
-                passenger.requestRide(conn,user_id);
+                passenger.requestRide(sc,conn,user_id);
                 break;
             case 2:
-                passenger.checkTrip(conn,user_id);
+                passenger.checkTrip(sc,conn,user_id);
                 break;
             default:
                 return;

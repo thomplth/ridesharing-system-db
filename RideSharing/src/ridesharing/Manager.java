@@ -2,6 +2,7 @@ package ridesharing;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -64,16 +65,20 @@ public class Manager {
             System.out.println("Error: Please enter numbers.");
         }catch(Exception e){
             System.out.println(e.getMessage());
-        }finally{
-            sc.close();
         }
-        String psql = "CREATE VIEW AS distance_table SELECT ts1.name AS start, ts2.name AS end, SQRT(SQUARE(ts1.location_x - ts2.location_y) + SQUARE(ts1.location_y - ts2.location_y)) AS distance FROM taxi_stop AS ts1, taxi_stop as ts2 WHERE ts1.name != ts2.name;" +
-                        "SELECT t.id,d.name,p.name,t.start_location,t.destination,t.start_time,t.end_time FROM trip t LEFT JOIN driver d ON t.driver_id = d.id LEFT JOIN passenger p ON t.passenger_id = p.id LEFT JOIN distance_table dt ON WHERE t.start_location = dt.start AND t.destination = dt.end AND dt.distance >= ? AND dt.distance <= ?;" +
-                        "DROP VIEW distance_table;" ;
+
         ResultSet rs = null;
         PreparedStatement pstmt = null;
+        String psql = "CREATE VIEW AS distancetable (start,end,distance) SELECT ts1.name, ts2.name, (POWER((ts1.location_x - ts2.location_x),2)+POWER((ts1.location_y - ts2.location_y),2)) AS distance FROM taxi_stop ts1, taxi_stop ts2 WHERE ts1.name != ts2.name;";
+        int create_view  = 0;
 
         try{
+            Statement stmt = conn.createStatement();
+            create_view = stmt.executeUpdate(psql);
+
+            psql = "SELECT t.id,d.name,p.name,t.start_location,t.destination,t.start_time,t.end_time FROM trip t LEFT JOIN driver d ON t.driver_id = d.id LEFT JOIN passenger p ON t.passenger_id = p.id LEFT JOIN distancetable dt ON t.start_location = dt.start AND t.destination = dt.end AND SQRT(dt.distance) >= ? AND SQRT(dt.distance) <= ?;" +
+                            "DROP VIEW distance_table;" ;
+            
             pstmt = conn.prepareStatement(psql);
             pstmt.setInt(1, min_distance);
             pstmt.setInt(2, max_distance);
@@ -92,6 +97,16 @@ public class Manager {
             }
         }catch(Exception e){
             System.out.println("Something was wrong with the SQL query");
+            e.printStackTrace();
+        }
+            if(create_view == 1){
+                psql = "DROP VIEW distancetable";
+                try{
+                    pstmt = conn.prepareStatement(psql);
+                    pstmt.executeUpdate();
+                }catch(Exception e){
+                    System.out.println("Cannot drop view.");
+                }
         }
         manager_output = true;
     }

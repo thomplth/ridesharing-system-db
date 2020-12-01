@@ -19,8 +19,7 @@ import java.sql.SQLException;
 public class Passenger {
     boolean passenger_output = false;
 
-    public void requestRide(Connection conn, int user_id){
-        Scanner sc = new Scanner(System.in);
+    public void requestRide(Scanner sc, Connection conn, int user_id){
         int passenger_num = 0;
         String start_location = "";
         String end_location = "";
@@ -51,7 +50,10 @@ public class Passenger {
             car_model = sc.nextLine().toLowerCase();
 
             System.out.println("Please enter the minimum driving years of the driver. (Press enter to skip)");
-            driver_years = sc.nextInt();
+            String pre_driver_years = sc.nextLine();
+            if(pre_driver_years == ""){
+                driver_years = Integer.parseInt(pre_driver_years);
+            }
             if(driver_years < 0){
                 throw new Exception("Wrong driver years!");
             }
@@ -59,10 +61,10 @@ public class Passenger {
 
         }catch(NumberFormatException nfe){
             System.out.println("Please enter a number");
+            return;
         }catch(Exception e){
             System.out.println(e.getMessage());
-        }finally{
-            sc.close();
+            return;
         }
         ArrayList<String> error_message = new ArrayList<String>();
 
@@ -76,7 +78,7 @@ public class Passenger {
             pstmt.setInt(1, user_id);
             rs = pstmt.executeQuery();
 
-            if(rs == null){
+            if(!rs.next()){
                 error_message.add("This user does not exist");
             }
         
@@ -87,30 +89,30 @@ public class Passenger {
             pstmt.setString(1, start_location);
             rs = pstmt.executeQuery();
 
-            if(rs == null){
+            if(!rs.next()){
                 error_message.add("This start destination does not exist");
             }
 
             pstmt.setString(1, end_location);
             rs = pstmt.executeQuery();
 
-            if(rs == null){
+            if(!rs.next()){
                 error_message.add("This end destination does not exist");
             }
 
         // Checking car models
 
-            psql = "SELECT * FROM vehicles WHERE seats >= ? AND UPPER(model) LIKE UPPER('%?%');";
+            psql = "SELECT * FROM vehicle WHERE seats >= ? AND UPPER(model) LIKE UPPER(?);";
             pstmt = conn.prepareStatement(psql);
             pstmt.setInt(1, passenger_num);
-            pstmt.setString(2, car_model);
+            pstmt.setString(2, "%" + car_model + "%");
             rs = pstmt.executeQuery();
 
-            if(rs == null){
+            if(!rs.next()){
                 error_message.add("Cannot find a matching car model.");
             }
 
-            psql = "SELECT * FROM drivers WHERE driving_years >= ?;";
+            psql = "SELECT * FROM driver WHERE driving_years >= ?;";
             pstmt = conn.prepareStatement(psql);
             pstmt.setInt(1, driver_years);
             rs = pstmt.executeQuery();
@@ -130,18 +132,18 @@ public class Passenger {
 
         // At last, create the request if no errors exist
 
-            psql = "SELECT COUNT(*) AS d_count FROM driver d, vehicle v WHERE v.seats >= ? AND driving_years >= ? AND UPPER(model) LIKE UPPER('%?%') AND d.vehicle_id = v.id;";
+            psql = "SELECT COUNT(*) AS d_count FROM driver d, vehicle v WHERE v.seats >= ? AND driving_years >= ? AND UPPER(model) LIKE UPPER(?) AND d.vehicle_id = v.id;";
             pstmt = conn.prepareStatement(psql);
             pstmt.setInt(1, passenger_num);
             pstmt.setInt(2, driver_years);
-            pstmt.setString(3, car_model);
+            pstmt.setString(3, "?" + car_model + "?");
             rs = pstmt.executeQuery();
-            rs.next();
 
-            if(rs.getInt(0) == 0){
+            if(rs.next()){
                 System.out.println("There are no drivers that can take the request.");
                 return;
             }else{
+                rs.beforeFirst();
                 psql = "INSERT INTO request VALUES (passenger_id = ?,start_location=?,destination=?,model=?,passengers=?,taken=0,driving_years=?);";
                 pstmt = conn.prepareStatement(psql);
                 pstmt.setInt(1, user_id);
@@ -161,19 +163,19 @@ public class Passenger {
         return;
     }
 
-    public void checkTrip(Connection conn, int user_id){
-        Scanner sc = new Scanner(System.in);
+    public void checkTrip(Scanner sc, Connection conn, int user_id){
         String start_date = "";
         String end_date = "";
         String end_location = "";
 
-        Pattern date = Pattern.compile("[1-2][0-9][0-9][0-9]-(0[1-9]|1[0-2])-([1-9]|[12][0-9]|3[01])");
+        Pattern date = Pattern.compile("[1-2][0-9][0-9][0-9]-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])");
 
-        try{          
+        try{ 
+            sc.nextLine();         
             System.out.println("Please enter the start date. (YYYY-MM-DD)");
             start_date = sc.nextLine();
             if(start_date == "" || start_date == null || !date.matcher(start_date).matches()){
-                throw new Exception("Wrong start location!");
+                throw new Exception("Wrong start date!");
             }
 
             System.out.println("Please enter the end date. (YYYY-MM-DD)");
@@ -192,13 +194,13 @@ public class Passenger {
 
         }catch(NumberFormatException nfe){
             System.out.println("Error: Please enter a number.");
+            return;
         }catch(Exception e){
             System.out.println(e.getMessage());
-        }finally{
-            sc.close();
+            return;
         }
 
-        String psql = "SELECT t.id,d.name,v.id,v.model,t.* FROM trip t WHERE t.passenger_id = ? AND t.start_date >= ? AND t.end_date >= ? AND t.destination = ? AND t.driver_id = d.id AND d.vehicle_id = v.id);";
+        String psql = "SELECT t.id,d.name,v.id,v.model,t.* FROM trip t,driver d,vehicle v WHERE t.passenger_id = ? AND t.start_time >= ? AND t.end_time >= ? AND t.destination = ? AND t.driver_id = d.id AND d.vehicle_id = v.id;";
         ResultSet rs = null;
         PreparedStatement pstmt = null;
         try{
@@ -212,6 +214,7 @@ public class Passenger {
             if(!rs.next()){
                 System.out.println("There are no trips matching your criteria");
             }else{
+                rs.beforeFirst();
                 System.out.println("Trip_ID, Driver Name, Vehicle ID, Vehicle Model, Start, End, Fee, Start Location, Destination");
                 do{
                     System.out.println(String.format("%d, %s, %s, %s, %s, %s, %d, %s, %s", 
@@ -223,6 +226,7 @@ public class Passenger {
 
         }catch(Exception e){
             System.out.println("Something was wrong with the SQL query");
+            e.printStackTrace();
         }
         passenger_output = true;
     }
