@@ -73,7 +73,7 @@ public class SystemAdministrator {
             "start_location varchar(20) not null," +
             "destination varchar(20) not null," +
             "start_time datetime not null," + // java.sql.Timestamp in “YYYY-MM-DD HH:mm:ss” format
-            "end_time datetime not null," + // java.sql.Timestamp in “YYYY-MM-DD HH:mm:ss” format
+            "end_time datetime," + // java.sql.Timestamp in “YYYY-MM-DD HH:mm:ss” format
             "fee integer not null," +
             "PRIMARY KEY(id)," +
             "FOREIGN KEY(driver_id) REFERENCES driver(id)," +
