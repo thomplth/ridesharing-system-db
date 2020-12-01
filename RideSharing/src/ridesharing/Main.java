@@ -11,8 +11,7 @@ public class Main {
 		Connection conn;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/group40", "Group40",
-					"3170group40");
+			conn = DriverManager.getConnection("jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/group40", "Group40", "3170group40");
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate("use group40;");
 			menu(conn);
@@ -42,7 +41,7 @@ public class Main {
 			while (true) {
 				try {
 					System.out.println("Please enter [1-4]");
-					choice = scan.nextInt();
+					choice = Integer.parseInt(scan.nextLine());
 					if (choice < 1 || choice > 5)
 						throw new Exception();
 					break;
@@ -76,7 +75,7 @@ public class Main {
 
 	public static void admin_menu(SystemAdministrator admin) {
 		int choice = 0;
-		Scanner scan = new Scanner(System.in);
+		Scanner scan = new Scanner(System.in); // do not close
 
 		while (choice != 5) {
 			System.out.println("Administrator, what would you like to do?");
@@ -89,7 +88,7 @@ public class Main {
 			while (true) {
 				try {
 					System.out.println("Please enter [1-5]");
-					choice = scan.nextInt();
+					choice = Integer.parseInt(scan.nextLine());
 					if (choice < 1 || choice > 5)
 						throw new Exception();
 					break;
@@ -114,7 +113,6 @@ public class Main {
 				default:
 			}
 		}
-		scan.close();
 	}
 
 	public static void passenger_menu(Passenger passenger) {
@@ -134,7 +132,7 @@ public class Main {
 		// 	while (true) {
 		// 		try {
 		// 			System.out.println("Please enter [1-4]");
-		// 			choice = scan.nextInt();
+		// 			choice = Integer.parseInt(scan.nextLine());
 		// 			if (choice < 1 || choice > 4)
 		// 				throw new Exception();
 		// 			break;
@@ -156,12 +154,11 @@ public class Main {
 		// 		default:
 		// 	}
 		// }
-		// scan.close();
 	}
 
 	public static void manager_menu(Manager manager) {
 		int choice = 0;
-		Scanner scan = new Scanner(System.in);
+		Scanner scan = new Scanner(System.in); // do not close
 
 		while (choice != 2) {
 			System.out.println("Manager, what would you like to do?");
@@ -171,7 +168,7 @@ public class Main {
 			while (true) {
 				try {
 					System.out.println("Please enter [1-2]");
-					choice = scan.nextInt();
+					choice = Integer.parseInt(scan.nextLine());
 					if (choice < 1 || choice > 2)
 						throw new Exception();
 					break;
@@ -187,6 +184,5 @@ public class Main {
 				default:
 			}
 		}
-		scan.close();
 	}
 }
