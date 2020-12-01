@@ -19,43 +19,6 @@ import java.sql.SQLException;
 public class Passenger {
     boolean passenger_output = false;
 
-    public Passenger(Connection conn){
-        Scanner sc = new Scanner(System.in);
-        int user_choice = 1;
-        int user_id = 0;
-        System.out.println("Please enter [1-3].");
-
-        try{
-            user_choice = sc.nextInt();
-            if(user_choice != 1 && user_choice != 2 && user_choice != 3){
-                throw new Exception("Wrong choice!");
-            }
-
-            System.out.println("Please enter your ID.");
-            user_id = sc.nextInt();
-            if(user_id < 0){
-                throw new Exception("Wrong ID!");
-            }
-        }catch(Exception e){
-           System.out.println(e.getMessage());
-        }finally{
-            sc.close();
-        }
-
-        switch(user_choice){
-            case 1:
-                requestRide(conn,user_id);
-                break;
-            case 2:
-                checkTrip(conn,user_id);
-                break;
-            case 3:
-                return;
-            default:
-                return;
-        }
-    }
-
     public void requestRide(Connection conn, int user_id){
         Scanner sc = new Scanner(System.in);
         int passenger_num = 0;
