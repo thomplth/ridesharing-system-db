@@ -35,7 +35,7 @@ public class SystemAdministrator {
 
             // driver table
             stmt = "CREATE TABLE driver(" + 
-            "id integer primary key," + 
+            "id integer primary key AUTO_INCREMENT," + 
             "name varchar(30) not null," + 
             "vehicle_id char(6) not null," +
             "driving_years integer not null," + 
@@ -51,16 +51,16 @@ public class SystemAdministrator {
             pstmt = conn.prepareStatement(stmt);
             pstmt.executeUpdate();
 
-            // passeneger table
+            // passenger table
             stmt = "CREATE TABLE passenger(" + 
-            "id integer primary key," + 
+            "id integer primary key AUTO_INCREMENT," + 
             "name varchar(30) not null)";
             pstmt = conn.prepareStatement(stmt);
             pstmt.executeUpdate();
 
             // request table
             stmt = "CREATE TABLE request(" + 
-            "id integer primary key," + 
+            "id integer primary key AUTO_INCREMENT," + 
             "passenger_id integer not null," +
             "start_location varchar(20) not null," +
             "destination varchar(20) not null," +
@@ -93,6 +93,7 @@ public class SystemAdministrator {
 
             System.out.println("Done! Tables are created!");
         } catch(Exception e) {
+            e.printStackTrace();
             System.out.println("\nError occured when creating tables: " + e);
         }
     }
@@ -131,15 +132,15 @@ public class SystemAdministrator {
             String path = scan.nextLine();
             System.out.print("Processing...");
 
-            loadTrips(path);
             loadPassengers(path);
             loadTaxiStops(path);
             loadVehicles(path);
             loadDrivers(path);
+            loadTrips(path);
 
-            scan.close();
             System.out.println("Data is loaded!");
         } catch (Exception e) {
+            e.printStackTrace(); 
             System.out.println("\nError occured when loading data: " + e);
         }
     }
@@ -184,7 +185,7 @@ public class SystemAdministrator {
     private void loadVehicles(String path) throws SQLException, IOException {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/vehicles.csv"));
         String line;
-        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO vehicles VALUES (?, ?, ?)");
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO vehicle VALUES (?, ?, ?)");
 
         while ((line = csv.readLine()) != null) {
             String data[] = line.split(",");
@@ -199,7 +200,7 @@ public class SystemAdministrator {
     private void loadPassengers(String path) throws SQLException, IOException {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/passengers.csv"));
         String line;
-        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO vehicles VALUES (?, ?)");
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO passenger VALUES (?, ?)");
 
         while ((line = csv.readLine()) != null) {
             String data[] = line.split(",");
@@ -214,8 +215,8 @@ public class SystemAdministrator {
     private void loadTrips(String path) throws SQLException, IOException {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/trips.csv"));
         String line;
-        int order[] = {1, 2, 5, 6, 3, 4, 7, 8}; // special order corresponds to trips.csv
-        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO driver VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        int order[] = {1, 2, 3, 6, 7, 4, 5, 8}; // special order corresponds to trips.csv
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO trip VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         
         while((line = csv.readLine()) != null) {
             String data[] = line.split(",");
@@ -230,7 +231,7 @@ public class SystemAdministrator {
     private void loadTaxiStops(String path) throws SQLException, IOException {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/taxi_stops.csv"));
         String line;
-        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO taxi_stops VALUES (?, ?, ?)");
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO taxi_stop VALUES (?, ?, ?)");
         
         while((line = csv.readLine()) != null) {
             String data[] = line.split(",");
