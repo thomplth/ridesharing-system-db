@@ -44,7 +44,7 @@ public class Main {
 					choice = Integer.parseInt(scan.nextLine());
 					if (choice < 1 || choice > 5)
 						throw new Exception();
-						break;
+					break;
 				} catch (Exception e) {
 					System.out.println("[ERROR] Invalid input.");
 				}
