@@ -38,15 +38,23 @@ public class Main {
 			System.out.println("4. A manager");
 			System.out.println("5. None of the above");
 
+			while (true) {
 				try {
 					System.out.println("Please enter [1-4]");
 					choice = Integer.parseInt(scan.nextLine());
 					if (choice < 1 || choice > 5)
 						throw new Exception();
+					break;
 				} catch (Exception e) {
 					System.out.println("[ERROR] Invalid input.");
+<<<<<<< HEAD
 					continue;
 				}
+=======
+				}
+			}
+
+>>>>>>> 85b414ff0280356b469fd58c35defab541569581
 			switch (choice) {
 				case 1:
 					SystemAdministrator admin = new SystemAdministrator(conn);
@@ -67,13 +75,13 @@ public class Main {
 				default:
 				
 			}
-			choice = 0;
 		}
+		scan.close();
 	}
 
 	public static void admin_menu(SystemAdministrator admin) {
 		int choice = 0;
-		Scanner scan = new Scanner(System.in);
+		Scanner scan = new Scanner(System.in); // do not close
 
 		while (choice != 5) {
 			System.out.println("Administrator, what would you like to do?");
@@ -86,7 +94,7 @@ public class Main {
 			while (true) {
 				try {
 					System.out.println("Please enter [1-5]");
-					choice = scan.nextInt();
+					choice = Integer.parseInt(scan.nextLine());
 					if (choice < 1 || choice > 5)
 						throw new Exception();
 					break;
@@ -166,7 +174,7 @@ public class Main {
 		// 	while (true) {
 		// 		try {
 		// 			System.out.println("Please enter [1-4]");
-		// 			choice = scan.nextInt();
+		// 			choice = Integer.parseInt(scan.nextLine());
 		// 			if (choice < 1 || choice > 4)
 		// 				throw new Exception();
 		// 			break;
@@ -192,7 +200,7 @@ public class Main {
 
 	public static void manager_menu(Manager manager) {
 		int choice = 0;
-		Scanner scan = new Scanner(System.in);
+		Scanner scan = new Scanner(System.in); // do not close
 
 		while (choice != 2) {
 			System.out.println("Manager, what would you like to do?");
@@ -202,7 +210,7 @@ public class Main {
 			while (true) {
 				try {
 					System.out.println("Please enter [1-2]");
-					choice = scan.nextInt();
+					choice = Integer.parseInt(scan.nextLine());
 					if (choice < 1 || choice > 2)
 						throw new Exception();
 					break;

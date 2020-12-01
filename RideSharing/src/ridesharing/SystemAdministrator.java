@@ -1,9 +1,12 @@
 package ridesharing;
 
 import java.util.Scanner;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.FileNotFoundException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +14,6 @@ import java.sql.SQLException;
 
 public class SystemAdministrator {
     private Connection conn;
-    private final String tables[] = {"driver", "vehicle", "passenger", "request", "trip", "taxi_stop"};
 
     public SystemAdministrator(Connection c) {
         conn = c;
@@ -19,14 +21,13 @@ public class SystemAdministrator {
 
     public void createTables() {
         System.out.print("Processing...");
-        this.deleteTables();
         
         try {
             String stmt;
             PreparedStatement pstmt;
 
             // vehicle table
-            stmt = "CREATE TABLE vehicle(" + 
+            stmt = "CREATE TABLE IF NOT EXISTS vehicle(" + 
             "id char(6) primary key," + 
             "model varchar(30) not null," + 
             "seats integer not null)";
@@ -34,7 +35,7 @@ public class SystemAdministrator {
             pstmt.executeUpdate();
 
             // driver table
-            stmt = "CREATE TABLE driver(" + 
+            stmt = "CREATE TABLE IF NOT EXISTS driver(" + 
             "id integer primary key AUTO_INCREMENT," + 
             "name varchar(30) not null," + 
             "vehicle_id char(6) not null," +
@@ -44,7 +45,7 @@ public class SystemAdministrator {
             pstmt.executeUpdate();
 
             // taxi_stop table
-            stmt = "CREATE TABLE taxi_stop(" + 
+            stmt = "CREATE TABLE IF NOT EXISTS taxi_stop(" + 
             "name varchar(20) primary key," + 
             "location_x integer not null," + 
             "location_y integer not null)";
@@ -52,14 +53,14 @@ public class SystemAdministrator {
             pstmt.executeUpdate();
 
             // passenger table
-            stmt = "CREATE TABLE passenger(" + 
+            stmt = "CREATE TABLE IF NOT EXISTS passenger(" + 
             "id integer primary key AUTO_INCREMENT," + 
             "name varchar(30) not null)";
             pstmt = conn.prepareStatement(stmt);
             pstmt.executeUpdate();
 
             // request table
-            stmt = "CREATE TABLE request(" + 
+            stmt = "CREATE TABLE IF NOT EXISTS request(" + 
             "id integer primary key AUTO_INCREMENT," + 
             "passenger_id integer not null," +
             "start_location varchar(20) not null," +
@@ -75,7 +76,7 @@ public class SystemAdministrator {
             pstmt.executeUpdate();
 
             // trip table
-            stmt = "CREATE TABLE trip(" + 
+            stmt = "CREATE TABLE IF NOT EXISTS trip(" + 
             "id integer primary key AUTO_INCREMENT," + 
             "driver_id integer not null," +
             "passenger_id integer not null," +
@@ -93,8 +94,7 @@ public class SystemAdministrator {
 
             System.out.println("Done! Tables are created!");
         } catch(Exception e) {
-            e.printStackTrace();
-            System.out.println("\nError occured when creating tables: " + e);
+            System.out.println("\n[Error] " + e);
         }
     }
 
@@ -105,6 +105,7 @@ public class SystemAdministrator {
             String stmt = "DROP TABLE IF EXISTS ";
             PreparedStatement pstmt;
 
+            String tables[] = {"driver", "vehicle", "passenger", "request", "trip", "taxi_stop"};
             pstmt = conn.prepareStatement(stmt + tables[4]);
             pstmt.execute();
             pstmt = conn.prepareStatement(stmt + tables[3]);
@@ -120,34 +121,41 @@ public class SystemAdministrator {
 
             System.out.println("Done! Tables are deleted!");
         } catch (Exception e) {
-            System.out.println("\nError occured when deleting tables: " + e);
+            System.out.println("\n[Error] " + e);
         }
     }
 
     public void loadData() {
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Please enter the folder path");
+        Scanner scan = new Scanner(System.in); // do not close
 
-        try {
-            String path = scan.nextLine();
-            System.out.print("Processing...");
+        while(true) {
+            try {
+                System.out.println("Please enter the folder path");
+                String path = scan.nextLine();
+                System.out.print("Processing...");
 
-            loadPassengers(path);
-            loadTaxiStops(path);
-            loadVehicles(path);
-            loadDrivers(path);
-            loadTrips(path);
+                loadPassengers(path);
+                loadTaxiStops(path);
+                loadVehicles(path);
+                loadDrivers(path);
+                loadTrips(path);
 
-            System.out.println("Data is loaded!");
-        } catch (Exception e) {
-            e.printStackTrace(); 
-            System.out.println("\nError occured when loading data: " + e);
+                System.out.println("Data is loaded!");
+                break;
+            } catch (FileNotFoundException fe) {
+                System.out.println("\n[Error] Invalid folder path.");
+            } catch (Exception e) {
+                System.out.println("\n[Error] Tables does not exist or files already loaded.");
+                break;
+            }
         }
     }
 
     public void checkData() {
         try {
             int counts[] = new int[6];
+            String tables[] = {"vehicle", "passenger", "driver", "trip", "request", "taxi_stop"};
+            String tables_title[] = {"Vehicle", "Passenger", "Driver", "Trip", "Request", "Taxi_stop"};
             String stmt = "SELECT COUNT(*) FROM ";
             PreparedStatement pstmt;
 
@@ -160,7 +168,7 @@ public class SystemAdministrator {
 
             System.out.println("Numbers of records in each table:");
             for (int i = 0; i < tables.length; i++) {
-                System.out.println(tables[i] + ": " + counts[i]);
+                System.out.println(tables_title[i] + ": " + counts[i]);
             }
         } catch (Exception e) {
             System.out.println("Error occured when checking data: " + e);
