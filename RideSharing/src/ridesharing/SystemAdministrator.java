@@ -19,10 +19,19 @@ public class SystemAdministrator {
 
     public void createTables() {
         System.out.print("Processing...");
+        this.deleteTables();
         
         try {
             String stmt;
             PreparedStatement pstmt;
+
+            // vehicle table
+            stmt = "CREATE TABLE vehicle(" + 
+            "id char(6) primary key," + 
+            "model varchar(30) not null," + 
+            "seats integer not null)";
+            pstmt = conn.prepareStatement(stmt);
+            pstmt.executeUpdate();
 
             // driver table
             stmt = "CREATE TABLE driver(" + 
@@ -34,16 +43,16 @@ public class SystemAdministrator {
             pstmt = conn.prepareStatement(stmt);
             pstmt.executeUpdate();
 
-            // vehicle table
-            stmt = "CREATE TABLE vehicle(" + 
-            "id char(6) primary key," + 
-            "model varchar(30) not null," + 
-            "seats integer not null)";
+            // taxi_stop table
+            stmt = "CREATE TABLE taxi_stop(" + 
+            "name varchar(20) primary key," + 
+            "location_x integer not null," + 
+            "location_y integer not null)";
             pstmt = conn.prepareStatement(stmt);
             pstmt.executeUpdate();
 
             // passeneger table
-            stmt = "CREATE TABLE passeneger(" + 
+            stmt = "CREATE TABLE passenger(" + 
             "id integer primary key," + 
             "name varchar(30) not null)";
             pstmt = conn.prepareStatement(stmt);
@@ -67,7 +76,7 @@ public class SystemAdministrator {
 
             // trip table
             stmt = "CREATE TABLE trip(" + 
-            "id integer AUTO_INCREMENT," + 
+            "id integer primary key AUTO_INCREMENT," + 
             "driver_id integer not null," +
             "passenger_id integer not null," +
             "start_location varchar(20) not null," +
@@ -75,19 +84,10 @@ public class SystemAdministrator {
             "start_time datetime not null," + // java.sql.Timestamp in “YYYY-MM-DD HH:mm:ss” format
             "end_time datetime," + // java.sql.Timestamp in “YYYY-MM-DD HH:mm:ss” format
             "fee integer not null," +
-            "PRIMARY KEY(id)," +
             "FOREIGN KEY(driver_id) REFERENCES driver(id)," +
             "FOREIGN KEY(passenger_id) REFERENCES passenger(id)," +
             "FOREIGN KEY(start_location) REFERENCES taxi_stop(name)," +
             "FOREIGN KEY(destination) REFERENCES taxi_stop(name))";
-            pstmt = conn.prepareStatement(stmt);
-            pstmt.executeUpdate();
-
-            // taxi_stop table
-            stmt = "CREATE TABLE taxi_stop(" + 
-            "name varchar(20) primary key," + 
-            "location_x integer not null," + 
-            "location_y integer not null)";
             pstmt = conn.prepareStatement(stmt);
             pstmt.executeUpdate();
 
@@ -104,10 +104,18 @@ public class SystemAdministrator {
             String stmt = "DROP TABLE IF EXISTS ";
             PreparedStatement pstmt;
 
-            for (int i = 0; i < tables.length; i++) {
-                pstmt = conn.prepareStatement(stmt + tables[i]);
-                pstmt.execute();
-            }
+            pstmt = conn.prepareStatement(stmt + tables[4]);
+            pstmt.execute();
+            pstmt = conn.prepareStatement(stmt + tables[3]);
+            pstmt.execute();
+            pstmt = conn.prepareStatement(stmt + tables[2]);
+            pstmt.execute();
+            pstmt = conn.prepareStatement(stmt + tables[5]);
+            pstmt.execute();
+            pstmt = conn.prepareStatement(stmt + tables[0]);
+            pstmt.execute();
+            pstmt = conn.prepareStatement(stmt + tables[1]);
+            pstmt.execute();
 
             System.out.println("Done! Tables are deleted!");
         } catch (Exception e) {
@@ -123,12 +131,11 @@ public class SystemAdministrator {
             String path = scan.nextLine();
             System.out.print("Processing...");
 
-            loadDrivers(path);
-            loadVehicles(path);
-            loadPassengers(path);
-            // no request is yet created
             loadTrips(path);
+            loadPassengers(path);
             loadTaxiStops(path);
+            loadVehicles(path);
+            loadDrivers(path);
 
             scan.close();
             System.out.println("Data is loaded!");
@@ -155,7 +162,7 @@ public class SystemAdministrator {
                 System.out.println(tables[i] + ": " + counts[i]);
             }
         } catch (Exception e) {
-            System.out.println("\nError occured when checking data: " + e);
+            System.out.println("Error occured when checking data: " + e);
         }
     }
 
@@ -207,7 +214,7 @@ public class SystemAdministrator {
     private void loadTrips(String path) throws SQLException, IOException {
         BufferedReader csv = new BufferedReader(new FileReader(path + "/trips.csv"));
         String line;
-        int order[] = {0, 1, 2, 5, 6, 3, 4, 7}; // special order corresponds to trips.csv
+        int order[] = {1, 2, 5, 6, 3, 4, 7, 8}; // special order corresponds to trips.csv
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO driver VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         
         while((line = csv.readLine()) != null) {
