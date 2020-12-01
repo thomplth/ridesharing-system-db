@@ -67,7 +67,7 @@ public class SystemAdministrator {
 
             // trip table
             stmt = "CREATE TABLE trip(" + 
-            "id integer primary key," + 
+            "id integer AUTO_INCREMENT," + 
             "driver_id integer not null," +
             "passenger_id integer not null," +
             "start_location varchar(20) not null," +
@@ -75,6 +75,7 @@ public class SystemAdministrator {
             "start_time datetime not null," + // java.sql.Timestamp in “YYYY-MM-DD HH:mm:ss” format
             "end_time datetime not null," + // java.sql.Timestamp in “YYYY-MM-DD HH:mm:ss” format
             "fee integer not null," +
+            "PRIMARY KEY(id)," +
             "FOREIGN KEY(driver_id) REFERENCES driver(id)," +
             "FOREIGN KEY(passenger_id) REFERENCES passenger(id)," +
             "FOREIGN KEY(start_location) REFERENCES taxi_stop(name)," +
