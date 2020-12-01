@@ -11,8 +11,7 @@ public class Main {
 		Connection conn;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/group40", "Group40",
-					"3170group40");
+			conn = DriverManager.getConnection("jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/group40", "Group40", "3170group40");
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate("use group40;");
 			menu(conn);
@@ -70,6 +69,7 @@ public class Main {
 					break;
 				default:
 			}
+			choice = 0;
 		}
 		scan.close();
 	}
@@ -114,7 +114,6 @@ public class Main {
 				default:
 			}
 		}
-		scan.close();
 	}
 
 	public static void passenger_menu(Passenger passenger) {
@@ -156,7 +155,6 @@ public class Main {
 		// 		default:
 		// 	}
 		// }
-		// scan.close();
 	}
 
 	public static void manager_menu(Manager manager) {
@@ -187,6 +185,5 @@ public class Main {
 				default:
 			}
 		}
-		scan.close();
 	}
 }
