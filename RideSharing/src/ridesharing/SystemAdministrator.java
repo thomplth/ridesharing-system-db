@@ -94,7 +94,7 @@ public class SystemAdministrator {
 
             System.out.println("Done! Tables are created!");
         } catch(Exception e) {
-            System.out.println("\nError occured when creating tables: " + e);
+            System.out.println("\n[Error] " + e);
         }
     }
 
@@ -121,7 +121,7 @@ public class SystemAdministrator {
 
             System.out.println("Done! Tables are deleted!");
         } catch (Exception e) {
-            System.out.println("\nError occured when deleting tables: " + e);
+            System.out.println("\n[Error] " + e);
         }
     }
 

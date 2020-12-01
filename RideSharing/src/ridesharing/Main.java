@@ -44,7 +44,7 @@ public class Main {
 					choice = Integer.parseInt(scan.nextLine());
 					if (choice < 1 || choice > 5)
 						throw new Exception();
-					break;
+						break;
 				} catch (Exception e) {
 					System.out.println("[ERROR] Invalid input.");
 				}
@@ -56,8 +56,8 @@ public class Main {
 					admin_menu(admin);
 					break;
 				case 2:
-					Passenger passenger = new Passenger(conn);
-					passenger_menu(passenger);
+					Passenger passenger = new Passenger();
+					passenger_menu(passenger,conn);
 					break;
 				case 3:
 					Driver driver = new Driver(conn);
@@ -115,7 +115,43 @@ public class Main {
 		}
 	}
 
-	public static void passenger_menu(Passenger passenger) {
+	public static void passenger_menu(Passenger passenger, Connection conn) {
+		Scanner sc = new Scanner(System.in);
+		int user_choice = 1;
+		int user_id = 0;
+		System.out.println("Passenger, what would you like to do?");
+		System.out.println("1. Request a ride");
+		System.out.println("2. Check trip records");
+		System.out.println("3. Go back");
+		System.out.println("Please enter [1-3].");
+
+		try {
+			user_choice = sc.nextInt();
+			if (user_choice != 1 && user_choice != 2 && user_choice != 3) {
+				throw new Exception("Wrong choice!");
+			}
+
+			System.out.println("Please enter your ID.");
+			user_id = sc.nextInt();
+			if (user_id < 0) {
+				throw new Exception("Wrong ID!");
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			sc.close();
+		}
+
+		switch (user_choice) {
+			case 1:
+				passenger.requestRide(conn, user_id);
+				break;
+			case 2:
+				passenger.checkTrip(conn, user_id);
+				break;
+			default:
+				return;
+		}
 	}
 
 	public static void driver_menu(Driver driver) {
