@@ -15,7 +15,7 @@ public class Passenger {
         int passenger_num = 0;
         String start_location = "";
         String end_location = "";
-        String car_model = "";
+        String car_model = "_";
         int driver_years = 0;
 
         try{          
@@ -43,16 +43,16 @@ public class Passenger {
 
             System.out.println("Please enter the minimum driving years of the driver. (Press enter to skip)");
             String pre_driver_years = sc.nextLine();
-            if(pre_driver_years == ""){
+            if(pre_driver_years != null && pre_driver_years != " " && !pre_driver_years.isEmpty()){
                 driver_years = Integer.parseInt(pre_driver_years);
-            }
-            if(driver_years < 0){
-                throw new Exception("Wrong driver years!");
+                if(driver_years < 0){
+                    throw new Exception("Wrong driver years!");
+                }
             }
             System.out.println("All input received. Querying Database.");
 
         }catch(NumberFormatException nfe){
-            System.out.println("Please enter a number");
+            System.out.println("Please enter a number instead of a string.");
             return;
         }catch(Exception e){
             System.out.println(e.getMessage());
@@ -111,7 +111,7 @@ public class Passenger {
 
         // Checking driver criteria
 
-            if(rs == null){
+            if(!rs.next()){
                 error_message.add("Cannot find a driver with sufficient driving years.");
             }
 
@@ -128,15 +128,14 @@ public class Passenger {
             pstmt = conn.prepareStatement(psql);
             pstmt.setInt(1, passenger_num);
             pstmt.setInt(2, driver_years);
-            pstmt.setString(3, "?" + car_model + "?");
+            pstmt.setString(3, "%" + car_model + "%");
             rs = pstmt.executeQuery();
 
-            if(rs.next()){
+            if(!rs.next()){
                 System.out.println("There are no drivers that can take the request.");
                 return;
             }else{
-                rs.beforeFirst();
-                psql = "INSERT INTO request VALUES (passenger_id = ?,start_location=?,destination=?,model=?,passengers=?,taken=0,driving_years=?);";
+                psql = "INSERT INTO request (passenger_id, start_location,destination,model,passengers,taken,driving_years) VALUES (?,?,?,?,?,0,?);";
                 pstmt = conn.prepareStatement(psql);
                 pstmt.setInt(1, user_id);
                 pstmt.setString(2, start_location);
@@ -145,7 +144,7 @@ public class Passenger {
                 pstmt.setInt(5, passenger_num);
                 pstmt.setInt(6, driver_years);
                 if(pstmt.executeUpdate() > 0){
-                    System.out.println("Your request is placed. " + rs.getInt(0) + " drivers are able to take the request.");
+                    System.out.println("Your request is placed. " + rs.getInt(1) + " drivers are able to take the request.");
                 }
             }
         }catch(SQLException sqle){
@@ -192,7 +191,7 @@ public class Passenger {
             return;
         }
 
-        String psql = "SELECT t.id,d.name,v.id,v.model,t.* FROM trip t,driver d,vehicle v WHERE t.passenger_id = ? AND t.start_time >= ? AND t.end_time >= ? AND t.destination = ? AND t.driver_id = d.id AND d.vehicle_id = v.id;";
+        String psql = "SELECT t.id,d.name,v.id,v.model,t.* FROM trip t,driver d,vehicle v WHERE t.passenger_id = ? AND t.start_time >= ? AND t.end_time <= ? AND t.destination = ? AND t.driver_id = d.id AND d.vehicle_id = v.id;";
         ResultSet rs = null;
         PreparedStatement pstmt = null;
         try{
@@ -205,12 +204,12 @@ public class Passenger {
 
             if(!rs.next()){
                 System.out.println("There are no trips matching your criteria");
-            }else{
                 rs.beforeFirst();
+            }else{
                 System.out.println("Trip_ID, Driver Name, Vehicle ID, Vehicle Model, Start, End, Fee, Start Location, Destination");
                 do{
                     System.out.println(String.format("%d, %s, %s, %s, %s, %s, %d, %s, %s", 
-                                                rs.getInt("t.id"), rs.getString("d.name"), rs.getInt("v.id"),rs.getString("v.model"),
+                                                rs.getInt("t.id"), rs.getString("d.name"), rs.getString("v.id"),rs.getString("v.model"),
                                                 rs.getString("t.start_time"),rs.getString("t.end_time"),rs.getInt("t.fee"),
                                                 rs.getString("t.start_location"),rs.getString("t.destination")));
                 }while(rs.next());

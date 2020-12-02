@@ -47,14 +47,9 @@ public class Main {
 					break;
 				} catch (Exception e) {
 					System.out.println("[ERROR] Invalid input.");
-<<<<<<< HEAD
-					continue;
-				}
-=======
 				}
 			}
 
->>>>>>> 85b414ff0280356b469fd58c35defab541569581
 			switch (choice) {
 				case 1:
 					SystemAdministrator admin = new SystemAdministrator(conn);
@@ -143,7 +138,8 @@ public class Main {
 			user_id = sc.nextInt();
             if(user_id < 0){
                 throw new Exception("Wrong ID!");
-            }
+			}
+
         }catch(Exception e){
            System.out.println(e.getMessage());
         }

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -69,15 +70,19 @@ public class Manager {
 
         ResultSet rs = null;
         PreparedStatement pstmt = null;
-        String psql = "CREATE VIEW AS distancetable (start,end,distance) SELECT ts1.name, ts2.name, (POWER((ts1.location_x - ts2.location_x),2)+POWER((ts1.location_y - ts2.location_y),2)) AS distance FROM taxi_stop ts1, taxi_stop ts2 WHERE ts1.name != ts2.name;";
+        String psql = "IF NOT EXISTS distancetable CREATE VIEW distancetable AS SELECT ts1.name AS start, ts2.name AS end, SQRT(POWER(ts1.location_x - ts2.location_x,2)+POWER(ts1.location_y - ts2.location_y,2)) AS distance FROM taxi_stop ts1, taxi_stop ts2 WHERE ts1.name != ts2.name;";
         int create_view  = 0;
-
         try{
             Statement stmt = conn.createStatement();
             create_view = stmt.executeUpdate(psql);
+        }catch(SQLException sqle){
+            System.out.println("Unable to create view.");
+        }
 
-            psql = "SELECT t.id,d.name,p.name,t.start_location,t.destination,t.start_time,t.end_time FROM trip t LEFT JOIN driver d ON t.driver_id = d.id LEFT JOIN passenger p ON t.passenger_id = p.id LEFT JOIN distancetable dt ON t.start_location = dt.start AND t.destination = dt.end AND SQRT(dt.distance) >= ? AND SQRT(dt.distance) <= ?;" +
-                            "DROP VIEW distance_table;" ;
+        try{
+           
+
+            psql = "SELECT t.id,d.name,p.name,t.start_location,t.destination,t.start_time,t.end_time FROM trip t LEFT JOIN driver d ON t.driver_id = d.id LEFT JOIN passenger p ON t.passenger_id = p.id LEFT JOIN distancetable dt ON t.start_location = dt.start AND t.destination = dt.end WHERE dt.distance >= ? AND dt.distance <= ?;";
             
             pstmt = conn.prepareStatement(psql);
             pstmt.setInt(1, min_distance);
@@ -89,10 +94,11 @@ public class Manager {
             }else{
                 System.out.println("Trip ID, Driver Name, Passenger Name, Start Location, Destination, Duration");
                 do{
-                    System.out.println(String.format("%d, %s, %s, %s, %s, %s, %d", 
-                                                rs.getInt("t.id"), rs.getString("d.name"), rs.getInt("p.name"),
-                                                rs.getString("t.start_location"),rs.getString("t.destionation"),
-                                                getDuration(rs.getString("t.start_time"),rs.getString("t.end_time"))));
+                    int duration = getDuration(rs.getString("t.start_time"),rs.getString("t.end_time"));
+                    System.out.println(String.format("%d, %s, %s, %s, %s, %s", 
+                                                rs.getInt("t.id"), rs.getString("d.name"), rs.getString("p.name"),
+                                                rs.getString("t.start_location"),rs.getString("t.destination"),
+                                                Integer.toString(duration)));
                 }while(rs.next());
             }
         }catch(Exception e){
@@ -100,7 +106,7 @@ public class Manager {
             e.printStackTrace();
         }
             if(create_view == 1){
-                psql = "DROP VIEW distancetable";
+                psql = "IF EXISTS distancetable DROP VIEW distancetable;";
                 try{
                     pstmt = conn.prepareStatement(psql);
                     pstmt.executeUpdate();
@@ -123,9 +129,6 @@ public class Manager {
             System.out.println("Failed to compute duration.");
         }
         long diff = d2.getTime() - d1.getTime();
-        return (int)diff / (60 * 1000) % 60; 
-    }
-    public boolean get_managerOutput(){
-        return manager_output;
+        return (int)(diff / (60 * 1000)) % 60; 
     }
 }
