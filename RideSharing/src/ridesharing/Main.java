@@ -172,9 +172,11 @@ public class Main {
 		switch (user_choice) {
 			case 1:
 				passenger.requestRide(sc, conn, user_id);
+				passenger_menu(sc, passenger, conn);
 				break;
 			case 2:
 				passenger.checkTrip(sc, conn, user_id);
+				passenger_menu(sc, passenger, conn);
 				break;
 			default:
 				return;
@@ -269,8 +271,10 @@ public class Main {
 			switch (choice) {
 				case 1:
 					manager.listTrips();
+					manager_menu(manager);
 					break;
 				default:
+					return;
 			}
 		}
 	}
