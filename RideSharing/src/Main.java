@@ -42,7 +42,7 @@ public class Main {
 			while (true) {
 				try {
 					System.out.println("Please enter [1-4]");
-					choice = Integer.parseInt(scan.nextLine());
+					choice = scan.nextInt();
 					if (choice < 1 || choice > 5)
 						throw new Exception();
 					break;
@@ -89,7 +89,7 @@ public class Main {
 			while (true) {
 				try {
 					System.out.println("Please enter [1-5]");
-					choice = Integer.parseInt(scan.nextLine());
+					choice = scan.nextInt();
 					if (choice < 1 || choice > 5)
 						throw new Exception();
 					break;
