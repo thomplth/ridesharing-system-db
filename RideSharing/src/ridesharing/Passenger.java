@@ -1,5 +1,5 @@
 package ridesharing;
-import java.util.ArrayList;
+
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -181,6 +181,7 @@ public class Passenger {
                 System.out.println("Please enter the destination.");
                 end_location = sc.nextLine();
                 psql = "SELECT * FROM taxi_stop ts WHERE UPPER(ts.name) = UPPER(?);";
+                pstmt = conn.prepareStatement(psql);
                 pstmt.setString(1, end_location);
                 rs = pstmt.executeQuery();
 
