@@ -72,7 +72,6 @@ public class Main {
 
 			}
 		}
-		scan.close();
 	}
 
 	public static void admin_menu(SystemAdministrator admin) {
