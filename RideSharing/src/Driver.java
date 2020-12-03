@@ -45,9 +45,9 @@ public class Driver {
                 {
 
                     stmt = "SELECT r.id, p.name, r.passengers, r.start_location, r.destination FROM request r, driver d, vehicle v, passenger p, taxi_stop t " +
-                              "WHERE d.vehicle_id = v.id AND r.passenger_id = p.id AND r.start_location = t.name AND d.id = ?" +
+                              "WHERE d.vehicle_id = v.id AND r.passenger_id = p.id AND r.start_location = t.name AND d.id = ? " +
                               "AND r.taken = 'N' AND d.driving_years >= r.driving_years AND LOWER(v.model) LIKE LOWER(CONCAT('%', r.model, '%')) " + 
-                              "AND v.seats >= r.passengers AND (? >= (ABS((t.location_x-?)) + ABS((t.location_y-?)))";
+                              "AND v.seats >= r.passengers AND (? >= (ABS((t.location_x-?)) + ABS((t.location_y-?))))";
                     pstmt = conn.prepareStatement(stmt);
                     pstmt.setInt(1, did);
                     pstmt.setInt(2, x);
@@ -112,10 +112,10 @@ public class Driver {
 
                 }while(!user_choice_passed);
     
-                stmt = "SELECT * FROM driver d, vehicle v, request r" +
-                            "WHERE d.vehicle_id = v.id AND r.passenger_id = p.id AND d.id = ? AND r.id = ?" +
-                            "AND r.taken = 'N' AND v.seats >= r.passengers AND v.model LIKE '%' + r.model + '%' " + 
-                            "AND d.driving_years >= r.driving_years;";
+                stmt = "SELECT * FROM driver d, vehicle v, request r " +
+                       "WHERE d.vehicle_id = v.id AND r.passenger_id = p.id AND d.id = ? AND r.id = ? " +
+                       "AND r.taken = 'N' AND v.seats >= r.passengers AND LOWER(v.model) LIKE LOWER(CONCAT('%', r.model, '%')) " + 
+                       "AND d.driving_years >= r.driving_years";
 
                 pstmt = conn.prepareStatement(stmt);
                 pstmt.setInt(1, did);
@@ -128,7 +128,7 @@ public class Driver {
                     return;
                 }else{
                     stmt = "SELECT p.id, p.name, r.start_location, r.destination FROM request r, passenger p " +
-                                "WHERE r.id = ? AND p.id = r.passenger_id AND taken = 'N'";
+                           "WHERE r.id = ? AND p.id = r.passenger_id AND taken = 'N'";
                     pstmt = conn.prepareStatement(stmt);
                     pstmt.setInt(1, rid);
                     rs = pstmt.executeQuery();
@@ -156,7 +156,7 @@ public class Driver {
                     pstmt.setInt(1, rid);
                     pstmt.executeUpdate();
                     
-                    stmt = "SELECT t.id, p.name, t.start_time FROM trip t, passenger p" +
+                    stmt = "SELECT t.id, p.name, t.start_time FROM trip t, passenger p " +
                             "WHERE t.passenger_id = p.id AND t.start_time = ?";
                     pstmt = conn.prepareStatement(stmt);
                     pstmt.setString(1, sdf.format(now));
@@ -217,8 +217,8 @@ public class Driver {
 				   pstmt.setInt(3, tid);
                                    pstmt.execute();
                             
-                                   stmt = "SELECT t.id, p.name, t.start_time, t.end_time, t.fee FROM trip t, passenger p" +
-                                              "WHERE t.passenger_id = p.id AND t.id = ?";
+                                   stmt = "SELECT t.id, p.name, t.start_time, t.end_time, t.fee FROM trip t, passenger p " +
+                                          "WHERE t.passenger_id = p.id AND t.id = ?";
                                    pstmt = conn.prepareStatement(stmt);
                                    pstmt.setInt(1, tid);
                                    rs = pstmt.executeQuery();
