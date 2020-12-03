@@ -82,8 +82,8 @@ public class SystemAdministrator {
             "passenger_id integer not null," +
             "start_location varchar(20) not null," +
             "destination varchar(20) not null," +
-            "start_time datetime not null," + // java.sql.Timestamp in “YYYY-MM-DD HH:mm:ss” format
-            "end_time datetime," + // java.sql.Timestamp in “YYYY-MM-DD HH:mm:ss” format
+            "start_time datetime not null," + // java.sql.Timestamp in YYYY-MM-DD HH:mm:ss format
+            "end_time datetime," + // java.sql.Timestamp in YYYY-MM-DD HH:mm:ss format
             "fee integer not null," +
             "FOREIGN KEY(driver_id) REFERENCES driver(id)," +
             "FOREIGN KEY(passenger_id) REFERENCES passenger(id)," +
