@@ -104,7 +104,7 @@ public class Driver {
                     {
                         stmt = "SELECT COUNT(*) AS r_count FROM  driver d, vehicle v, request r" +
                                    "WHERE d.vehicle_id = v.id AND r.passenger_id = p.id AND d.id = ? AND r.id = ?" +
-                                   "AND r.taken = 'N' AND v.seats >= r.passengers AND v.model LIKE '%' + r.model '%' " + 
+                                   "AND r.taken = 'N' AND v.seats >= r.passengers AND v.model LIKE '%' + r.model + '%' " + 
                                    "AND d.driving_years >= r.driving_years";
                         pstmt = conn.prepareStatement(stmt);
                         pstmt.setInt(1, did);
