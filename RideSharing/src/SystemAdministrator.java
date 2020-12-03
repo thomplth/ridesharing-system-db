@@ -1,5 +1,3 @@
-package ridesharing;
-
 import java.util.Scanner;
 
 import java.io.BufferedReader;
