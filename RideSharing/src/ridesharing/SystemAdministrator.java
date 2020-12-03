@@ -94,7 +94,7 @@ public class SystemAdministrator {
 
             System.out.println("Done! Tables are created!");
         } catch(Exception e) {
-            System.out.println("\n[Error] " + e);
+            System.out.println("\n[ERROR] " + e);
         }
     }
 
@@ -121,7 +121,7 @@ public class SystemAdministrator {
 
             System.out.println("Done! Tables are deleted!");
         } catch (Exception e) {
-            System.out.println("\n[Error] " + e);
+            System.out.println("\n[ERROR] " + e);
         }
     }
 
@@ -143,9 +143,9 @@ public class SystemAdministrator {
                 System.out.println("Data is loaded!");
                 break;
             } catch (FileNotFoundException fe) {
-                System.out.println("\n[Error] Invalid folder path.");
+                System.out.println("\n[ERROR] Invalid folder path.");
             } catch (Exception e) {
-                System.out.println("\n[Error] Tables does not exist or files already loaded.");
+                System.out.println("\n[ERROR] Tables does not exist or files already loaded.");
                 break;
             }
         }
@@ -171,7 +171,7 @@ public class SystemAdministrator {
                 System.out.println(tables_title[i] + ": " + counts[i]);
             }
         } catch (Exception e) {
-            System.out.println("Error occured when checking data: " + e);
+            System.out.println("[ERROR] " + e);
         }
     }
 

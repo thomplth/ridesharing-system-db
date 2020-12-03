@@ -2,6 +2,8 @@ package ridesharing;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
@@ -11,7 +13,8 @@ public class Main {
 		Connection conn;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/group40", "Group40", "3170group40");
+			conn = DriverManager.getConnection("jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/group40", "Group40",
+					"3170group40");
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate("use group40;");
 			menu(conn);
@@ -57,18 +60,18 @@ public class Main {
 					break;
 				case 2:
 					Passenger passenger = new Passenger();
-					passenger_menu(scan,passenger,conn);
+					passenger_menu(scan, passenger, conn);
 					break;
 				case 3:
 					Driver driver = new Driver(conn);
-					driver_menu(driver);
+					driver_menu(driver, conn);
 					break;
 				case 4:
 					Manager manager = new Manager(conn);
 					manager_menu(manager);
 					break;
 				default:
-				
+
 			}
 		}
 		scan.close();
@@ -117,90 +120,107 @@ public class Main {
 	}
 
 	public static void passenger_menu(Scanner sc, Passenger passenger, Connection conn) {
-        int user_choice = 1;
-        int user_id = 0;
-        System.out.println("Passenger, what would you like to do?");
-        System.out.println("1. Request a ride");    
-        System.out.println("2. Check trip records");
-        System.out.println("3. Go back");
-        System.out.println("Please enter [1-3].");
+		int user_choice = 1;
+		int user_id = 0;
+		System.out.println("Passenger, what would you like to do?");
+		System.out.println("1. Request a ride");
+		System.out.println("2. Check trip records");
+		System.out.println("3. Go back");
+		System.out.println("Please enter [1-3].");
 
-        try{
-            user_choice = sc.nextInt();
-            if(user_choice != 1 && user_choice != 2 && user_choice != 3){
-                throw new Exception("Wrong choice!");
+		try {
+			user_choice = sc.nextInt();
+			if (user_choice != 1 && user_choice != 2 && user_choice != 3) {
+				throw new Exception("Wrong choice!");
 			}
-			if(user_choice == 3){
+			if (user_choice == 3) {
 				return;
 			}
 
-            System.out.println("Please enter your ID.");
+			System.out.println("Please enter your ID.");
 			user_id = sc.nextInt();
-            if(user_id < 0){
-                throw new Exception("Wrong ID!");
+			if (user_id < 0) {
+				throw new Exception("Wrong ID!");
 			}
 
-        }catch(Exception e){
-           System.out.println(e.getMessage());
-        }
-		
-		switch(user_choice){
-            case 1:
-                passenger.requestRide(sc,conn,user_id);
-                break;
-            case 2:
-                passenger.checkTrip(sc,conn,user_id);
-                break;
-            default:
-                return;
-        }
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		switch (user_choice) {
+			case 1:
+				passenger.requestRide(sc, conn, user_id);
+				break;
+			case 2:
+				passenger.checkTrip(sc, conn, user_id);
+				break;
+			default:
+				return;
+		}
 	}
 
-	public static void driver_menu(Driver driver) {
+	public static void driver_menu(Driver driver, Connection conn) {
 		int choice = 0, id = 0;
 		Scanner scan = new Scanner(System.in);
 
 		while (choice != 4) {
-		 	System.out.println("Driver, what would you like to do?");
-		 	System.out.println("1. Search requests");
-		 	System.out.println("2. Take a request");
-		 	System.out.println("3. Finish a trip");
-		 	System.out.println("4. Go back");
+			System.out.println("Driver, what would you like to do?");
+			System.out.println("1. Search requests");
+			System.out.println("2. Take a request");
+			System.out.println("3. Finish a trip");
+			System.out.println("4. Go back");
 
-		 	while (true) {
-		 		try {
-		 			System.out.println("Please enter [1-4]");
-		 			choice = Integer.parseInt(scan.nextLine());
-		 			if (choice < 1 || choice > 4)
-		 				throw new Exception();
+			while (true) {
+				try {
+					System.out.println("Please enter [1-4]");
+					choice = Integer.parseInt(scan.nextLine());
+					if (choice < 1 || choice > 4)
+						throw new Exception();
 					if (choice == 4)
 						return;
-					do {
-                        			System.out.println("Please enter your ID.");
-                 				id = scan.nextInt();
-                
-                       				if (id <= 0)
-							System.out.println("[ERROR] Invalid input");
-                			} while (id <= 0);
-		 			break;
-		 		} catch (Exception e) {
-		 			System.out.println("[ERROR] Invalid input.");
-		 		}
-		 	}
 
-		 	switch (choice) {
-		 		case 1:
-		 			driver.searchRequest(id);
-		 			break;
-		 		case 2:
-		 			driver.takeRequest(id);
-		 			break;
-		 		case 3:
-		 			driver.finishTrip(id);
-		 			break;
-		 		default:
-		 	}
-		 }
+					while (true) {
+						try {
+							System.out.println("Please enter your ID.");
+							id = scan.nextInt();
+							if (id <= 0)
+								throw new Exception();
+
+							String stmt = "SELECT * FROM driver d WHERE d.id = ?;";
+							PreparedStatement pstmt = conn.prepareStatement(stmt);
+							pstmt.setInt(1, id);
+							ResultSet rs = pstmt.executeQuery();
+
+							if (!rs.next())
+								throw new SQLException();
+
+							break;
+						} catch (SQLException sqle) {
+							System.out.println("[ERROR] Driver does not exist");
+						} catch (Exception ie) {
+							System.out.println("[ERROR] Invalid input");
+						} 
+					}
+					break;
+
+				} catch (Exception e) {
+					System.out.println("[ERROR] Invalid input.");
+				}
+			}
+
+			switch (choice) {
+				case 1:
+					driver.searchRequest(id);
+					break;
+				case 2:
+					driver.takeRequest(id);
+					break;
+				case 3:
+					driver.finishTrip(id);
+					break;
+				default:
+			}
+		}
 	}
 
 	public static void manager_menu(Manager manager) {
