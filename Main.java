@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -9,19 +10,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Main {
 
-    static Connection conn;
-    static Scanner scan = new Scanner(System.in);
+    public static Connection conn;
+    public static Scanner scan = new Scanner(System.in);
 
     // Main Class
     public static void main(String args[]) {
-        Connection conn;
         try {
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection("jdbc:mysql://projgw.cse.cuhk.edu.hk:2633/group40", "Group40",
@@ -59,6 +61,8 @@ public class Main {
                         throw new Exception();
                     break;
                 } catch (Exception e) {
+                    e.printStackTrace();
+                    e.printStackTrace();
                     System.out.println("[ERROR] Invalid input.");
                 }
             }
@@ -101,6 +105,7 @@ public class Main {
                         throw new Exception();
                     break;
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("[ERROR] Invalid input.");
                 }
             }
@@ -229,6 +234,7 @@ public class Main {
                     break;
 
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("[ERROR] Invalid input.");
                 }
             }
@@ -264,6 +270,7 @@ public class Main {
                         throw new Exception();
                     break;
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("[ERROR] Invalid input.");
                 }
             }
@@ -339,6 +346,7 @@ public class Main {
 
             System.out.println("Done! Tables are created!");
         } catch (Exception e) {
+                    e.printStackTrace();
             System.out.println("\n[ERROR] " + e);
         }
     }
@@ -366,6 +374,7 @@ public class Main {
 
             System.out.println("Done! Tables are deleted!");
         } catch (Exception e) {
+                    e.printStackTrace();
             System.out.println("\n[ERROR] " + e);
         }
     }
@@ -389,6 +398,7 @@ public class Main {
             } catch (FileNotFoundException fe) {
                 System.out.println("\n[ERROR] Invalid folder path.");
             } catch (Exception e) {
+                    e.printStackTrace();
                 System.out.println("\n[ERROR] Tables does not exist or files already loaded.");
                 break;
             }
@@ -415,6 +425,7 @@ public class Main {
                 System.out.println(tables_title[i] + ": " + counts[i]);
             }
         } catch (Exception e) {
+                    e.printStackTrace();
             System.out.println("[ERROR] " + e);
         }
     }
@@ -585,6 +596,7 @@ public class Main {
             System.out.println("All input received. Querying Database.");
 
         } catch (Exception e) {
+                    e.printStackTrace();
             e.printStackTrace();
             return;
         }
@@ -671,8 +683,6 @@ public class Main {
                     System.out.println("[ERROR] Destination not found.");
                 }
             } while (!user_choice_passed);
-
-            System.out.println("All input received. Querying Database.");
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -704,6 +714,7 @@ public class Main {
             }
 
         } catch (Exception e) {
+                    e.printStackTrace();
             System.out.println("Something was wrong with the SQL query");
             e.printStackTrace();
         }
@@ -727,6 +738,7 @@ public class Main {
                     System.out.println("[ERROR] Distance should be greater than 0");
             } while (distance <= 0);
         } catch (Exception e) {
+                    e.printStackTrace();
             System.out.println("Error:" + e);
         }
 
@@ -832,7 +844,7 @@ public class Main {
 
                 rs.next();
                 int pid = rs.getInt("p.id");
-                String name = rs.getString("p.name");
+                // String name = rs.getString("p.name");
                 String start = rs.getString("r.start_location");
                 String dest = rs.getString("r.destination");
 
@@ -864,6 +876,7 @@ public class Main {
                 System.out.println(rs.getInt(1) + ", " + rs.getString(2) + ", " + rs.getString(3));
             }
         } catch (Exception e) {
+                    e.printStackTrace();
             e.printStackTrace();
         }
     }
@@ -926,6 +939,7 @@ public class Main {
                 } while (choice.equals("y") || choice.equals("n"));
             }
         } catch (Exception e) {
+                    e.printStackTrace();
             System.out.println("Error" + e);
         }
     }
@@ -948,6 +962,7 @@ public class Main {
                         System.out.println("[ERROR] Invalid minimum distance.");
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                     user_choice_passed = false;
                     System.out.println("[ERROR] Invalid minimum distance.");
                 }
@@ -965,6 +980,7 @@ public class Main {
                         System.out.println("[ERROR] Invalid maximum distance.");
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                     user_choice_passed = false;
                     System.out.println("[ERROR] Invalid maximum distance.");
                 }
@@ -973,6 +989,7 @@ public class Main {
             System.out.println("All input received. Querying Database.");
 
         } catch (Exception e) {
+                    e.printStackTrace();
             e.printStackTrace();
             return;
         }
@@ -1008,6 +1025,7 @@ public class Main {
                 } while (rs.next());
             }
         } catch (Exception e) {
+                    e.printStackTrace();
             System.out.println("Something was wrong with the SQL query");
             e.printStackTrace();
         }
@@ -1017,6 +1035,7 @@ public class Main {
                 pstmt = conn.prepareStatement(psql);
                 pstmt.executeUpdate();
             } catch (Exception e) {
+                    e.printStackTrace();
                 System.out.println("Cannot drop view.");
             }
         }
