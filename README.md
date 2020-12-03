@@ -1,19 +1,16 @@
 # Ridesharing System
 
 Group 40
-Name: Wong Man Yeung, SID: 1155125184
-Name:
+Name: WONG Man Yeung, SID: 1155125184
+Name: LAM Tak Hing, SID: 1155131289
 
 ### Test Cases ###
 - [x] 0
 - [x] 1
-- [x] 2<br/>
-Note that the current version could not handle the input order.<br/>
-`491 Stuart Fung LI7059 Honda Freed G Aero 2018-10-25 20:10:10 2018-10-25 21:07:45 57 Mong Kok Ho Man Tin`<br/>
-`491, Stuart Fung, LI7059, Honda Freed G Aero, 2018-10-25 20:10:10.0, 2018-10-25 21:07:45.0, 57, Mong Kok, Ho Man Tin`<br/>
+- [x] 2
 - [x] 3
 - [ ] 4
 - [ ] 5
 - [ ] 6
 - [ ] 7
-- [ ] 8
+- [x] 8
