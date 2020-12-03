@@ -136,7 +136,7 @@ public class Main {
 					System.out.println("[ERROR] Invalid input");
 					user_choice_passed = false;
 				}
-			}while(user_choice_passed);
+			}while(!user_choice_passed);
 
 			user_choice_passed = true;
 			if (user_choice == 3) {
@@ -163,7 +163,7 @@ public class Main {
 					user_choice_passed = false;
 				}
 
-			}while(user_choice_passed);
+			}while(!user_choice_passed);
 
 		} catch (Exception e) {
 			e.printStackTrace();

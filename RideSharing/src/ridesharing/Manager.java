@@ -62,7 +62,7 @@ public class Manager {
                     user_choice_passed = false;
                     System.out.println("[ERROR] Invalid minimum distance.");
                 }
-            }while(user_choice_passed);
+            }while(!user_choice_passed);
 
             user_choice_passed = true;
 
@@ -80,7 +80,7 @@ public class Manager {
                     user_choice_passed = false;
                     System.out.println("[ERROR] Invalid maximum distance.");
                 }
-            }while(user_choice_passed);
+            }while(!user_choice_passed);
 
 
             System.out.println("All input received. Querying Database.");

@@ -31,7 +31,7 @@ public class Passenger {
 					System.out.println("[ERROR] Invalid number of passengers.");
 					user_choice_passed = false;
                 }
-            }while(user_choice_passed);
+            }while(!user_choice_passed);
 
             user_choice_passed = true;
 
@@ -48,7 +48,7 @@ public class Passenger {
 					System.out.println("[ERROR] Start location not found.");
 					user_choice_passed = false;
                 }
-            }while(user_choice_passed);
+            }while(!user_choice_passed);
 
             user_choice_passed = true;
 
@@ -69,7 +69,7 @@ public class Passenger {
 					System.out.println("[ERROR] Destination not found.");
 					user_choice_passed = false;
                 }
-            }while(user_choice_passed);
+            }while(!user_choice_passed);
 
             // Choose model
             System.out.println("Please enter the model. (Press enter to skip)");
@@ -159,7 +159,7 @@ public class Passenger {
                     user_choice_passed = false;
                     System.out.println("[ERROR] Invalid start date.");
                 }
-            }while(user_choice_passed);
+            }while(!user_choice_passed);
 
             user_choice_passed = true;
 
@@ -172,7 +172,7 @@ public class Passenger {
                     user_choice_passed = false;
                     System.out.println("[ERROR] Invalid end date.");
                 }
-            }while(user_choice_passed);
+            }while(!user_choice_passed);
 
             user_choice_passed = true;
 
@@ -189,7 +189,7 @@ public class Passenger {
                     user_choice_passed = false;
                     System.out.println("[ERROR] Destination not found.");
                 }
-            }while(user_choice_passed);
+            }while(!user_choice_passed);
 
             System.out.println("All input received. Querying Database.");
         }catch(Exception e){

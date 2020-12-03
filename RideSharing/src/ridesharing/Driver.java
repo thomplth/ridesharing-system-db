@@ -112,7 +112,7 @@ public class Driver {
                         user_choice_passed = false;
                     }
 
-                }while(user_choice_passed);
+                }while(!user_choice_passed);
     
                 stmt = "SELECT * FROM driver d, vehicle v, request r" +
                             "WHERE d.vehicle_id = v.id AND r.passenger_id = p.id AND d.id = ? AND r.id = ?" +
