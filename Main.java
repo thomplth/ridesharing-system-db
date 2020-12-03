@@ -56,13 +56,11 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-4]");
-                    choice = scan.nextInt();
+                    choice = Integer.parseInt(scan.nextLine());
                     if (choice < 1 || choice > 5)
                         throw new Exception();
                     break;
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    e.printStackTrace();
                     System.out.println("[ERROR] Invalid input.");
                 }
             }
@@ -100,12 +98,11 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-5]");
-                    choice = scan.nextInt();
+                    choice = Integer.parseInt(scan.nextLine());
                     if (choice < 1 || choice > 5)
                         throw new Exception();
                     break;
                 } catch (Exception e) {
-                    e.printStackTrace();
                     System.out.println("[ERROR] Invalid input.");
                 }
             }
@@ -123,70 +120,66 @@ public class Main {
                 case 4:
                     checkData();
                     break;
-                default:
             }
         }
     }
 
     public static void passenger_menu() {
-        int user_choice = 1;
-        int user_id = 0;
-        System.out.println("Passenger, what would you like to do?");
-        System.out.println("1. Request a ride");
-        System.out.println("2. Check trip records");
-        System.out.println("3. Go back");
+        int choice = 0;
+        int id = 0;
 
-        boolean user_choice_passed = true;
-        try {
-            do {
-                System.out.println("Please enter [1-3].");
-                user_choice = scan.nextInt();
-                if (user_choice != 1 && user_choice != 2 && user_choice != 3) {
-                    System.out.println("[ERROR] Invalid input");
-                    user_choice_passed = false;
+        while (choice != 3) {
+            System.out.println("Passenger, what would you like to do?");
+            System.out.println("1. Request a ride");
+            System.out.println("2. Check trip records");
+            System.out.println("3. Go back");
+
+            while (true) {
+                try {
+                    System.out.println("Please enter [1-3].");
+                    choice = Integer.parseInt(scan.nextLine());
+                    if (choice != 1 && choice != 2 && choice != 3)
+                        throw new Exception();
+                    break;
+                } catch (Exception e) {
+                    System.out.println("[ERROR] Invalid input.");
                 }
-            } while (!user_choice_passed);
-
-            user_choice_passed = true;
-            if (user_choice == 3) {
-                return;
             }
 
-            do {
-                System.out.println("Please enter your ID.");
-                user_id = scan.nextInt();
-                if (user_id < 0) {
-                    System.out.println("[ERROR] Invalid ID.");
-                    user_choice_passed = false;
-                }
-
-                String psql = "SELECT * FROM passenger p WHERE p.id = ?;";
-                ResultSet rs = null;
-                PreparedStatement pstmt = null;
-                pstmt = conn.prepareStatement(psql);
-                pstmt.setInt(1, user_id);
-                rs = pstmt.executeQuery();
-
-                if (!rs.next()) {
-                    System.out.println("[ERROR] Invalid ID.");
-                    user_choice_passed = false;
-                }
-
-            } while (!user_choice_passed);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        switch (user_choice) {
-            case 1:
-                requestRide(user_id);
+            if (choice == 3)
                 break;
-            case 2:
-                checkTrip(user_id);
-                break;
-            default:
-                return;
+
+            while (true) {
+                try {
+                    System.out.println("Please enter your ID.");
+                    id = Integer.parseInt(scan.nextLine());
+                    if (id <= 0)
+                        throw new Exception();
+
+                    String stmt = "SELECT * FROM passenger p WHERE p.id = ?;";
+                    PreparedStatement pstmt = conn.prepareStatement(stmt);
+                    pstmt.setInt(1, id);
+                    ResultSet rs = pstmt.executeQuery();
+
+                    if (!rs.next())
+                        throw new SQLException();
+
+                    break;
+                } catch (SQLException sqle) {
+                    System.out.println("[ERROR] Driver does not exist");
+                } catch (Exception ie) {
+                    System.out.println("[ERROR] Invalid input");
+                }
+            }
+
+            switch (choice) {
+                case 1:
+                    requestRide(id);
+                    break;
+                case 2:
+                    checkTrip(id);
+                    break;
+            }
         }
     }
 
@@ -212,7 +205,7 @@ public class Main {
                     while (true) {
                         try {
                             System.out.println("Please enter your ID.");
-                            id = scan.nextInt();
+                            id = Integer.parseInt(scan.nextLine());
                             if (id <= 0)
                                 throw new Exception();
 
@@ -346,7 +339,7 @@ public class Main {
 
             System.out.println("Done! Tables are created!");
         } catch (Exception e) {
-                    e.printStackTrace();
+            e.printStackTrace();
             System.out.println("\n[ERROR] " + e);
         }
     }
@@ -374,7 +367,7 @@ public class Main {
 
             System.out.println("Done! Tables are deleted!");
         } catch (Exception e) {
-                    e.printStackTrace();
+            e.printStackTrace();
             System.out.println("\n[ERROR] " + e);
         }
     }
@@ -396,9 +389,10 @@ public class Main {
                 System.out.println("Data is loaded!");
                 break;
             } catch (FileNotFoundException fe) {
+                fe.printStackTrace();
                 System.out.println("\n[ERROR] Invalid folder path.");
             } catch (Exception e) {
-                    e.printStackTrace();
+                e.printStackTrace();
                 System.out.println("\n[ERROR] Tables does not exist or files already loaded.");
                 break;
             }
@@ -425,7 +419,7 @@ public class Main {
                 System.out.println(tables_title[i] + ": " + counts[i]);
             }
         } catch (Exception e) {
-                    e.printStackTrace();
+            e.printStackTrace();
             System.out.println("[ERROR] " + e);
         }
     }
@@ -522,8 +516,7 @@ public class Main {
         try {
             do {
                 System.out.println("Please enter the number of passengers.");
-                passenger_num = scan.nextInt();
-                scan.nextLine();
+                passenger_num = Integer.parseInt(scan.nextLine());
                 if (passenger_num < 1 || passenger_num > 8) {
                     System.out.println("[ERROR] Invalid number of passengers.");
                     user_choice_passed = false;
@@ -596,7 +589,7 @@ public class Main {
             System.out.println("All input received. Querying Database.");
 
         } catch (Exception e) {
-                    e.printStackTrace();
+            e.printStackTrace();
             e.printStackTrace();
             return;
         }
@@ -631,7 +624,6 @@ public class Main {
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
-        return;
     }
 
     public static void checkTrip(int user_id) {
@@ -645,7 +637,7 @@ public class Main {
         PreparedStatement pstmt = null;
 
         try {
-            scan.nextLine();
+            
             do {
                 System.out.println("Please enter the start date. (YYYY-MM-DD)");
                 start_date = scan.nextLine();
@@ -653,7 +645,7 @@ public class Main {
                 if (start_date == "" || start_date == null || !date.matcher(start_date).matches()) {
                     user_choice_passed = false;
                     System.out.println("[ERROR] Invalid start date.");
-                }
+                } else break;
             } while (!user_choice_passed);
 
             user_choice_passed = true;
@@ -665,7 +657,7 @@ public class Main {
                 if (end_date == "" || end_date == null || !date.matcher(start_date).matches()) {
                     user_choice_passed = false;
                     System.out.println("[ERROR] Invalid end date.");
-                }
+                } else break;
             } while (!user_choice_passed);
 
             user_choice_passed = true;
@@ -714,7 +706,7 @@ public class Main {
             }
 
         } catch (Exception e) {
-                    e.printStackTrace();
+            e.printStackTrace();
             System.out.println("Something was wrong with the SQL query");
             e.printStackTrace();
         }
@@ -727,19 +719,19 @@ public class Main {
 
         try {
             System.out.println("Please enter the coordinates of your location.");
-            x = scan.nextInt();
-            y = scan.nextInt();
+            x = Integer.parseInt(scan.nextLine());;
+            y = Integer.parseInt(scan.nextLine());;
 
             do {
                 System.out.println("Please enter the maximum distance from you to the passenger.");
-                distance = scan.nextInt();
+                distance = Integer.parseInt(scan.nextLine());;
 
                 if (distance <= 0)
                     System.out.println("[ERROR] Distance should be greater than 0");
             } while (distance <= 0);
         } catch (Exception e) {
-                    e.printStackTrace();
-            System.out.println("Error:" + e);
+            e.printStackTrace();
+            System.out.println("[ERROR] " + e);
         }
 
         try {
@@ -803,7 +795,7 @@ public class Main {
             do {
                 System.out.println("Please enter the request ID");
                 try {
-                    rid = scan.nextInt();
+                    rid = Integer.parseInt(scan.nextLine());;
                 } catch (Exception nfe) {
                     System.out.println("[ERROR] The request id should be a number.");
                     user_choice_passed = false;
@@ -876,7 +868,7 @@ public class Main {
                 System.out.println(rs.getInt(1) + ", " + rs.getString(2) + ", " + rs.getString(3));
             }
         } catch (Exception e) {
-                    e.printStackTrace();
+            e.printStackTrace();
             e.printStackTrace();
         }
     }
@@ -939,7 +931,7 @@ public class Main {
                 } while (choice.equals("y") || choice.equals("n"));
             }
         } catch (Exception e) {
-                    e.printStackTrace();
+            e.printStackTrace();
             System.out.println("Error" + e);
         }
     }
@@ -955,7 +947,7 @@ public class Main {
             do {
                 try {
                     System.out.println("Please enter the minimum travelling distance.");
-                    min_distance = scan.nextInt();
+                    min_distance = Integer.parseInt(scan.nextLine());;
 
                     if (min_distance < 0) {
                         user_choice_passed = false;
@@ -973,7 +965,7 @@ public class Main {
             do {
                 try {
                     System.out.println("Please enter the maximum travelling distance.");
-                    max_distance = scan.nextInt();
+                    max_distance = Integer.parseInt(scan.nextLine());;
 
                     if (max_distance < 0 || max_distance <= min_distance) {
                         user_choice_passed = false;
@@ -989,7 +981,7 @@ public class Main {
             System.out.println("All input received. Querying Database.");
 
         } catch (Exception e) {
-                    e.printStackTrace();
+            e.printStackTrace();
             e.printStackTrace();
             return;
         }
@@ -1025,7 +1017,7 @@ public class Main {
                 } while (rs.next());
             }
         } catch (Exception e) {
-                    e.printStackTrace();
+            e.printStackTrace();
             System.out.println("Something was wrong with the SQL query");
             e.printStackTrace();
         }
@@ -1035,7 +1027,7 @@ public class Main {
                 pstmt = conn.prepareStatement(psql);
                 pstmt.executeUpdate();
             } catch (Exception e) {
-                    e.printStackTrace();
+                e.printStackTrace();
                 System.out.println("Cannot drop view.");
             }
         }
