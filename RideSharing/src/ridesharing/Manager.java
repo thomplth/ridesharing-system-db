@@ -46,26 +46,48 @@ public class Manager {
         Scanner sc = new Scanner(System.in);
         int min_distance = 0;
         int max_distance = 0;
+        boolean user_choice_passed = false;
 
         try{          
-            System.out.println("Please enter the minimum travelling distance.");
-            min_distance = sc.nextInt();
-            if(min_distance < 0){
-                throw new Exception("Wrong minimum distance!");
-            }
+            do{
+                try{
+                    System.out.println("Please enter the minimum travelling distance.");
+                    min_distance = sc.nextInt();
 
-            System.out.println("Please enter the maximum travelling distance.");
-            max_distance = sc.nextInt();
-            if(max_distance < 0 || max_distance < min_distance){
-                throw new Exception("Wrong maximum distance!");
-            }
+                    if(min_distance < 0){
+                        user_choice_passed = false;
+                        System.out.println("[ERROR] Invalid minimum distance.");
+                    }
+                }catch(Exception e){
+                    user_choice_passed = false;
+                    System.out.println("[ERROR] Invalid minimum distance.");
+                }
+            }while(user_choice_passed);
+
+            user_choice_passed = true;
+
+
+            do{
+                try{
+                    System.out.println("Please enter the maximum travelling distance.");
+                    max_distance = sc.nextInt();
+
+                    if(max_distance < 0 || max_distance <= min_distance){
+                        user_choice_passed = false;
+                        System.out.println("[ERROR] Invalid maximum distance.");
+                    }
+                }catch(Exception e){
+                    user_choice_passed = false;
+                    System.out.println("[ERROR] Invalid maximum distance.");
+                }
+            }while(user_choice_passed);
+
 
             System.out.println("All input received. Querying Database.");
 
-        }catch(NumberFormatException nfe){
-            System.out.println("Error: Please enter numbers.");
         }catch(Exception e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return;
         }
 
         ResultSet rs = null;
@@ -80,8 +102,6 @@ public class Manager {
         }
 
         try{
-           
-
             psql = "SELECT t.id,d.name,p.name,t.start_location,t.destination,t.start_time,t.end_time FROM trip t LEFT JOIN driver d ON t.driver_id = d.id LEFT JOIN passenger p ON t.passenger_id = p.id LEFT JOIN distancetable dt ON t.start_location = dt.start AND t.destination = dt.end WHERE dt.distance >= ? AND dt.distance <= ?;";
             
             pstmt = conn.prepareStatement(psql);

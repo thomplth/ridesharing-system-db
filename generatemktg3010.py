@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 
 
@@ -75,13 +76,24 @@ def gen_options():
             f.write("".join(choices) + "\n")
             choices = []
     
-gen_options()
+def gen_numbers(mean,sd):
+    with open("./output.txt","w") as f:
+        for _ in range(200):
+            num = round(np.random.normal(mean,sd),-2)
+            if num < 0:
+                num = abs(num)
+            print(num)
+            f.write(str(num) + "\n")
+
+gen_numbers(7011.681818,7890.507397)
+    
 
 def trash():
-    final = random.random()
-    for i,v in enumerate(probability):
-        if final < v:
-            choices = [options[i]]
-            break
-        else:
-            final -= probability[i]
+    pass
+    #final = random.random()
+    #for i,v in enumerate(probability):
+        #if final < v:
+            #choices = [options[i]]
+            #break
+       # else:
+            #final -= probability[i]

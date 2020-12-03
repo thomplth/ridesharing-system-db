@@ -126,25 +126,47 @@ public class Main {
 		System.out.println("1. Request a ride");
 		System.out.println("2. Check trip records");
 		System.out.println("3. Go back");
-		System.out.println("Please enter [1-3].");
-
+		
+		boolean user_choice_passed = true;
 		try {
-			user_choice = sc.nextInt();
-			if (user_choice != 1 && user_choice != 2 && user_choice != 3) {
-				throw new Exception("Wrong choice!");
-			}
+			do{
+				System.out.println("Please enter [1-3].");
+				user_choice = sc.nextInt();
+				if(user_choice != 1 && user_choice != 2 && user_choice != 3){
+					System.out.println("[ERROR] Invalid input");
+					user_choice_passed = false;
+				}
+			}while(user_choice_passed);
+
+			user_choice_passed = true;
 			if (user_choice == 3) {
 				return;
 			}
 
-			System.out.println("Please enter your ID.");
-			user_id = sc.nextInt();
-			if (user_id < 0) {
-				throw new Exception("Wrong ID!");
-			}
+			do{
+				System.out.println("Please enter your ID.");
+				user_id = sc.nextInt();
+				if(user_id < 0){
+					System.out.println("[ERROR] Invalid ID.");
+					user_choice_passed = false;
+				}
+
+				String psql = "SELECT * FROM passenger p WHERE p.id = ?;";
+				ResultSet rs = null;
+				PreparedStatement pstmt = null;
+				pstmt = conn.prepareStatement(psql);
+				pstmt.setInt(1, user_id);
+				rs = pstmt.executeQuery();
+	
+				if(!rs.next()){
+					System.out.println("[ERROR] Invalid ID.");
+					user_choice_passed = false;
+				}
+
+			}while(user_choice_passed);
 
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 
 		switch (user_choice) {

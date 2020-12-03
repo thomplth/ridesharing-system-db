@@ -2,5 +2,6 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "d:\\OneDrive - The Chinese University of Hong Kong\\CSCI3170\\Project\\mysql-connector-java-5.1.47.jar"
-    ]
+    ],
+    "python.pythonPath": "D:\\Anaconda\\python.exe"
 }
