@@ -157,41 +157,50 @@ public class Main {
 	}
 
 	public static void driver_menu(Driver driver) {
-		// int choice = 0;
-		// Scanner scan = new Scanner(System.in);
+		int choice = 0, id = 0;
+		Scanner scan = new Scanner(System.in);
 
-		// while (choice != 2) {
-		// 	System.out.println("Driver, what would you like to do?");
-		// 	System.out.println("1. Search requests");
-		// 	System.out.println("2. Take a request");
-		// 	System.out.println("3. Finish a trip");
-		// 	System.out.println("4. Go back");
+		while (choice != 4) {
+		 	System.out.println("Driver, what would you like to do?");
+		 	System.out.println("1. Search requests");
+		 	System.out.println("2. Take a request");
+		 	System.out.println("3. Finish a trip");
+		 	System.out.println("4. Go back");
 
-		// 	while (true) {
-		// 		try {
-		// 			System.out.println("Please enter [1-4]");
-		// 			choice = Integer.parseInt(scan.nextLine());
-		// 			if (choice < 1 || choice > 4)
-		// 				throw new Exception();
-		// 			break;
-		// 		} catch (Exception e) {
-		// 			System.out.println("[ERROR] Invalid input.");
-		// 		}
-		// 	}
+		 	while (true) {
+		 		try {
+		 			System.out.println("Please enter [1-4]");
+		 			choice = Integer.parseInt(scan.nextLine());
+		 			if (choice < 1 || choice > 4)
+		 				throw new Exception();
+					if (choice == 4)
+						return;
+					do {
+                        			System.out.println("Please enter your ID.");
+                 				id = scan.nextInt();
+                
+                       				if (id <= 0)
+							System.out.println("[ERROR] Invalid input");
+                			} while (id <= 0);
+		 			break;
+		 		} catch (Exception e) {
+		 			System.out.println("[ERROR] Invalid input.");
+		 		}
+		 	}
 
-		// 	switch (choice) {
-		// 		case 1:
-		// 			// search requests
-		// 			break;
-		// 		case 2:
-		// 			// take a request
-		// 			break;
-		// 		case 3:
-		// 			// finish trip
-		// 			break;
-		// 		default:
-		// 	}
-		// }
+		 	switch (choice) {
+		 		case 1:
+		 			driver.searchRequest(id);
+		 			break;
+		 		case 2:
+		 			driver.takeRequest(id);
+		 			break;
+		 		case 3:
+		 			driver.finishTrip(id);
+		 			break;
+		 		default:
+		 	}
+		 }
 	}
 
 	public static void manager_menu(Manager manager) {
