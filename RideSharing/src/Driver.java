@@ -185,7 +185,7 @@ public class Driver {
                 pstmt.setInt(1, did);
                 ResultSet rs = pstmt.executeQuery();
                 int tid = rs.getInt(1);
-                java.util.Date start= rs.getTimestamp(3);
+                java.sql.Timestamp start= rs.getTimestamp(3);
                 
                 if(!rs.next())
                     System.out.println("[ERROR] You don't have unfinished trip.");
@@ -205,15 +205,16 @@ public class Driver {
                                 {
                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                    java.util.Date now = new java.util.Date();
-                                   String end_s = sdf.format(now);
-                                   java.util.Date end = sdf.parse(end_s);
-                            
-                                   int duration = (int) Math.floor((double)(end.getTime() - start.getTime()) / 1000 / 60);
+				   java.sql.Timestamp endt = new java.sql.Timestamp(now.getTime());
+                                  
+				   long duration = now.getTime() - start.getTime();
+				   duration = (duration / 1000) / 60;
                             
                                    stmt = "UPDATE trip SET end_time = ?, fee = ? WHERE id = ?";
                                    pstmt = conn.prepareStatement(stmt);
-                                   pstmt.setString(1, end_s);
-                                   pstmt.setInt(2, duration);
+                                   pstmt.setTimestamp(1, endt);
+                                   pstmt.setInt(2, (int) duration);
+				   pstmt.setInt(3, tid);
                                    pstmt.execute();
                             
                                    stmt = "SELECT t.id, p.name, t.start_time, t.end_time, t.fee FROM trip t, passenger p" +
