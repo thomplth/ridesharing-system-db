@@ -7,51 +7,8 @@ import java.util.*;
 public class Driver {
     private Connection conn;
 
-    public Driver(Connection c) 
-    {
+    public Driver(Connection c) {
         conn = c;
-    }
-
-    public void dmenu()
-    {
-        int choice=0, id=0;
-        Scanner keyboard = new Scanner(System.in);
-
-        System.out.println("Driver, what would you like to do?");
-        System.out.println("1. Search requests");
-        System.out.println("2. Take a request");
-        System.out.println("3. Finish a trip");
-        System.out.println("4. Go back");
-
-        try {
-                do {
-                        System.out.println("Please enter [1-4]");
-                        choice = keyboard.nextInt();
-                
-                        if (choice < 1 || choice > 4)
-                            System.out.println("[ERROR] Invalid input");
-                } while (choice < 1 || choice > 4);
-
-                do {
-                        System.out.println("Please enter your ID.");
-                        id = keyboard.nextInt();
-                
-                        if (id <= 0)
-                            System.out.println("[ERROR] Invalid input");
-                } while (id <= 0);
-
-        } catch (Exception e) {
-            System.out.println("[ERROR] Invalid input");
-        }
-        
-        if (choice == 1)
-            searchRequest(id);
-        else if (choice == 2)
-            takeRequest(id);
-        else if (choice == 3)
-            finishTrip(id);
-        
-        return;
     }
 
     public void searchRequest(int did) 
@@ -88,7 +45,7 @@ public class Driver {
                     System.out.println("The user does not exist");
                 else
                 {
-//dun know wtf i am doing ((   
+
                     stmt = "SELECT r.id, p.name, r.passengers, r.start_location, r.destination FROM request r, driver d, vehicle v, passenger p, taxi_stop t " +
                               "WHERE d.vehicle_id = v.id AND r.passenger_id = p.id AND r.start_location = t.name AND d.id = ?" +
                               "AND r.taken = 'N' AND d.driving_years >= r.driving_years AND v.model LIKE '%' + r.model '%' " + 
@@ -180,6 +137,22 @@ public class Driver {
                           pstmt.setString(3, start);
                           pstmt.setString(4, dest);
                           pstmt.setString(5, sdf.format(now));
+                          pstmt.execute();
+                          
+                          stmt = "UPDATE request SET taken = 'Y' WHERE id = ?";
+                          pstmt = conn.prepareStatement(stmt);
+                          pstmt.setInt(1, rid);
+                          pstmt.execute();
+                          
+                          stmt = "SELECT t.id, p.name, t.start_time FROM trip t, passenger p" +
+                                    "WHERE t.passenger_id = p.id AND t.start_time = ?";
+                                   pstmt = conn.prepareStatement(stmt);
+                                   pstmt.setString(1, sdf.format(now));
+                                   rs = pstmt.executeQuery();
+                                   rs.next();
+                            
+                          System.out.println("Trip ID, Passenger name, Start");
+                          System.out.println(rs.getInt(1) + ", " + rs.getString(2) + ", " + rs.getString(3));
                         }
                     }
                 }
@@ -188,8 +161,68 @@ public class Driver {
         }
     }
     
-    public void finishTrip(int uid)
+    public void finishTrip(int did)
     {
-    
+        String choice = "";
+        Scanner keyboard = new Scanner(System.in);
+        
+        try {
+        String stmt;
+                PreparedStatement pstmt;
+
+                stmt = "SELECT id, passenger_id, start_time FROM trip WHERE driver_id = ? AND end_time IS NULL";
+                pstmt = conn.prepareStatement(stmt);
+                pstmt.setInt(1, did);
+                ResultSet rs = pstmt.executeQuery();
+                int tid = rs.getInt(1);
+                java.util.Date start= rs.getTimestamp(3);
+                
+                if(!rs.next())
+                    System.out.println("[ERROR] You don't have unfinished trip.");
+                else
+                {
+                    System.out.println("Trip ID, Passenger ID, Start");
+                    System.out.println(rs.getInt(1) + ", " + rs.getInt(2) + ", " + start);
+                    do {
+                            System.out.println("Do you wish to finish the trip? [y/n]");
+                            choice = keyboard.nextLine();
+                    
+                            if (choice.equals("y") || choice.equals("n"))
+                            {
+                                if(choice.equals("n"))
+                                    return;
+                                else
+                                {
+                                   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                   java.util.Date now = new java.util.Date();
+                                   String end_s = sdf.format(now);
+                                   java.util.Date end = sdf.parse(end_s);
+                            
+                                   int duration = (int) Math.floor((double)(end.getTime() - start.getTime()) / 1000 / 60);
+                            
+                                   stmt = "UPDATE trip SET end_time = ?, fee = ? WHERE id = ?";
+                                   pstmt = conn.prepareStatement(stmt);
+                                   pstmt.setString(1, end_s);
+                                   pstmt.setInt(2, duration);
+                                   pstmt.execute();
+                            
+                                   stmt = "SELECT t.id, p.name, t.start_time, t.end_time, t.fee FROM trip t, passenger p" +
+                                              "WHERE t.passenger_id = p.id AND t.id = ?";
+                                   pstmt = conn.prepareStatement(stmt);
+                                   pstmt.setInt(1, tid);
+                                   rs = pstmt.executeQuery();
+                                   rs.next();
+                            
+                                   System.out.println("Trip ID, Passenger name, Start, End, Fee");
+                                   System.out.println(rs.getInt(1) + ", " + rs.getString(2) + ", " + rs.getString(sdf.format(3)) + ", " + rs.getString(sdf.format(4)) + ", " + rs.getInt(5));
+                                }
+                            }
+                            else
+                                System.out.println("[ERROR] Please enter y/n");
+                    } while (choice.equals("y") || choice.equals("n"));
+                }
+        } catch (Exception e){
+            System.out.println("Error" + e);
+        }
     }
 }
