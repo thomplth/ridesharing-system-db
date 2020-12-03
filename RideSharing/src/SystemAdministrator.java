@@ -185,7 +185,6 @@ public class SystemAdministrator {
             }
             pstmt.execute();
         }
-        csv.close();
     }
 
     private void loadVehicles(String path) throws SQLException, IOException {
@@ -200,7 +199,6 @@ public class SystemAdministrator {
             }
             pstmt.execute();
         }
-        csv.close();
     }
 
     private void loadPassengers(String path) throws SQLException, IOException {
@@ -215,7 +213,6 @@ public class SystemAdministrator {
             }
             pstmt.execute();
         }
-        csv.close();
     }
 
     private void loadTrips(String path) throws SQLException, IOException {
@@ -231,7 +228,6 @@ public class SystemAdministrator {
             }
             pstmt.execute();
         }
-        csv.close();
     }
 
     private void loadTaxiStops(String path) throws SQLException, IOException {
@@ -246,6 +242,5 @@ public class SystemAdministrator {
             }
             pstmt.execute();
         }
-        csv.close();
     }
 }
