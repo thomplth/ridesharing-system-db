@@ -1,8 +1,8 @@
 # Ridesharing System
-
-Group 40
-Name: WONG Man Yeung, SID: 1155125184
-Name: LAM Tak Hing, SID: 1155131289
+Group 40 <br/>
+Name: WONG Man Yeung,    SID: 1155125184 <br/>
+Name: LAM Tak Hing,	     SID: 1155131289 <br/>
+Name: , SID:  <br/>
 
 ### Test Cases ###
 - [x] 0
