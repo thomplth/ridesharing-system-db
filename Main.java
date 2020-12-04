@@ -1023,7 +1023,7 @@ public class Main {
 
         ResultSet rs = null;
         PreparedStatement pstmt = null;
-        String psql = "CREATE VIEW IF NOT EXISTS distancetable AS SELECT ts1.name AS start, ts2.name AS end, SQRT(POWER(ts1.location_x - ts2.location_x,2)+POWER(ts1.location_y - ts2.location_y,2)) AS distance FROM taxi_stop ts1, taxi_stop ts2 WHERE ts1.name != ts2.name;";
+        String psql = "CREATE OR REPLACE VIEW distancetable AS SELECT ts1.name AS start, ts2.name AS end, SQRT(POWER(ts1.location_x - ts2.location_x,2)+POWER(ts1.location_y - ts2.location_y,2)) AS distance FROM taxi_stop ts1, taxi_stop ts2 WHERE ts1.name != ts2.name;";
         int create_view = 0;
         try {
             Statement stmt = conn.createStatement();
@@ -1034,7 +1034,7 @@ public class Main {
         }
 
         try {
-            psql = "SELECT t.id,d.name,p.name,t.start_location,t.destination,t.start_time,t.end_time FROM trip t LEFT JOIN driver d ON t.driver_id = d.id LEFT JOIN passenger p ON t.passenger_id = p.id LEFT JOIN distancetable dt ON t.start_location = dt.start AND t.destination = dt.end AND dt.distance >= ? AND dt.distance <= ?;";
+            psql = "SELECT t.id,d.name,p.name,t.start_location,t.destination,t.start_time,t.end_time FROM trip t, distancetable dt WHERE t.start_location = dt.start AND t.destination = dt.end AND dt.distance >= ? AND dt.distance <= ? LEFT JOIN driver d ON t.driver_id = d.id LEFT JOIN passenger p ON t.passenger_id = p.id;";
 
             pstmt = conn.prepareStatement(psql);
             pstmt.setInt(1, min_distance);
