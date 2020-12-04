@@ -789,7 +789,7 @@ public class Main {
                 stmt = "SELECT r.id, p.name, r.passengers, r.start_location, r.destination FROM request r, driver d, vehicle v, passenger p, taxi_stop t "
                         + "WHERE d.vehicle_id = v.id AND r.passenger_id = p.id AND r.start_location = t.name AND d.id = ? "
                         + "AND r.taken = 'N' AND d.driving_years >= r.driving_years AND LOWER(v.model) LIKE LOWER(CONCAT('%', r.model, '%')) "
-                        + "AND v.seats >= r.passengers AND (SQRT(POWER(t.location_x-?,2) + POWER(t.location_y-?,2))) <= ?";
+                        + "AND v.seats >= r.passengers AND ABS(t.location_x-?) + ABS(t.location_y-?) <= ?";
                 pstmt = conn.prepareStatement(stmt);
                 pstmt.setInt(1, did);
                 pstmt.setInt(2, x);
@@ -1076,10 +1076,13 @@ public class Main {
         try {
             d1 = format.parse(start); // not sure if the casting work
             d2 = format.parse(end);
+            System.out.println(d1 + " " + d2);
         } catch (ParseException e) {
             System.out.println("Failed to compute duration.");
         }
         long diff = d2.getTime() - d1.getTime();
-        return (int) (diff / (60 * 1000)) % 60;
+        System.out.println((int) diff);
+        System.out.println((int) (diff / (60 * 1000) % 60));
+        return (int) (diff / (60 * 1000) % 60);
     }
 }
