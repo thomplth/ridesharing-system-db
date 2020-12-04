@@ -1081,8 +1081,6 @@ public class Main {
             System.out.println("Failed to compute duration.");
         }
         long diff = d2.getTime() - d1.getTime();
-        System.out.println((int) diff);
-        System.out.println((int) (diff / (60 * 1000) % 60));
-        return (int) (diff / (60 * 1000) % 60);
+        return (int) (diff / (60 * 1000));
     }
 }
