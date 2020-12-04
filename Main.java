@@ -56,12 +56,12 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-4]");
-                    if(!scan.hasNext()){
+                    if (!scan.hasNext()) {
                         return;
                     }
                     String a_choice = scan.nextLine();
                     choice = Integer.parseInt(a_choice);
-                    if (choice < 1 || choice > 5){
+                    if (choice < 1 || choice > 5) {
                         throw new Exception();
                     }
                     break;
@@ -104,9 +104,9 @@ public class Main {
                 try {
                     System.out.println("Please enter [1-5]");
                     String a_choice;
-                    if(scan.hasNext()){
+                    if (scan.hasNext()) {
                         a_choice = scan.nextLine();
-                    }else{
+                    } else {
                         return;
                     }
                     choice = Integer.parseInt(a_choice);
@@ -149,9 +149,9 @@ public class Main {
                 try {
                     System.out.println("Please enter [1-3].");
                     String a_choice;
-                    if(scan.hasNext()){
+                    if (scan.hasNext()) {
                         a_choice = scan.nextLine();
-                    }else{
+                    } else {
                         return;
                     }
                     choice = Integer.parseInt(a_choice);
@@ -202,9 +202,6 @@ public class Main {
 
     public static void driver_menu() {
         int choice = 0, id = 0;
-        if(!scan.hasNext()){
-            return;
-        }
 
         while (choice != 4) {
             System.out.println("Driver, what would you like to do?");
@@ -217,9 +214,9 @@ public class Main {
                 try {
                     System.out.println("Please enter [1-4]");
                     String a_choice;
-                    if(scan.hasNext()){
+                    if (scan.hasNext()) {
                         a_choice = scan.nextLine();
-                    }else{
+                    } else {
                         return;
                     }
                     choice = Integer.parseInt(a_choice);
@@ -231,7 +228,7 @@ public class Main {
                     while (true) {
                         try {
                             System.out.println("Please enter your ID.");
-                            if(!scan.hasNext()){
+                            if (!scan.hasNext()) {
                                 return;
                             }
                             id = Integer.parseInt(scan.nextLine());
@@ -287,9 +284,9 @@ public class Main {
                 try {
                     System.out.println("Please enter [1-2]");
                     String a_choice;
-                    if(scan.hasNext()){
+                    if (scan.hasNext()) {
                         a_choice = scan.nextLine();
-                    }else{
+                    } else {
                         return;
                     }
                     choice = Integer.parseInt(a_choice);
@@ -545,14 +542,14 @@ public class Main {
         String psql = "";
         ResultSet rs = null;
         PreparedStatement pstmt = null;
-        if(!scan.hasNext()){
-            return;
-        }
 
         try {
             do {
                 System.out.println("Please enter the number of passengers.");
-                passenger_num = Integer.parseInt(scan.nextLine());
+                if (scan.hasNext()) {
+                    passenger_num = Integer.parseInt(scan.nextLine());
+                } else
+                    return;
                 if (passenger_num < 1 || passenger_num > 8) {
                     System.out.println("[ERROR] Invalid number of passengers.");
                     user_choice_passed = false;
@@ -573,7 +570,8 @@ public class Main {
                 if (!rs.next() || start_location == "" || start_location == null) {
                     System.out.println("[ERROR] Start location not found.");
                     user_choice_passed = false;
-                }
+                } else
+                    user_choice_passed = true;
             } while (!user_choice_passed);
 
             user_choice_passed = true;
@@ -582,9 +580,10 @@ public class Main {
                 System.out.println("Please enter the destination.");
                 end_location = scan.nextLine();
 
-                if (end_location == start_location) {
+                if (end_location.equals(start_location)) {
                     System.out.println("[ERROR] Start location and destionation should be different.");
                     user_choice_passed = false;
+                    continue;
                 }
 
                 psql = "SELECT * FROM taxi_stop ts WHERE UPPER(ts.name) = UPPER(?);";
@@ -594,7 +593,8 @@ public class Main {
                 if (!rs.next() || end_location == "" || end_location == null) {
                     System.out.println("[ERROR] Destination not found.");
                     user_choice_passed = false;
-                }
+                } else
+                    user_choice_passed = true;
             } while (!user_choice_passed);
 
             // Choose model
@@ -670,20 +670,20 @@ public class Main {
         String psql = "";
         ResultSet rs = null;
         PreparedStatement pstmt = null;
-        if(!scan.hasNext()){
-            return;
-        }
-
         try {
-            
+
             do {
                 System.out.println("Please enter the start date. (YYYY-MM-DD)");
-                start_date = scan.nextLine();
+                if (scan.hasNext()) {
+                    start_date = scan.nextLine();
+                } else
+                    return;
 
                 if (start_date == "" || start_date == null || !date.matcher(start_date).matches()) {
                     user_choice_passed = false;
                     System.out.println("[ERROR] Invalid start date.");
-                } else break;
+                } else
+                    break;
             } while (!user_choice_passed);
 
             user_choice_passed = true;
@@ -695,7 +695,8 @@ public class Main {
                 if (end_date == "" || end_date == null || !date.matcher(start_date).matches()) {
                     user_choice_passed = false;
                     System.out.println("[ERROR] Invalid end date.");
-                } else break;
+                } else
+                    break;
             } while (!user_choice_passed);
 
             user_choice_passed = true;
@@ -797,14 +798,14 @@ public class Main {
                 pstmt.setInt(4, distance);
                 rs = pstmt.executeQuery();
 
-                if (!rs.next()){
+                if (!rs.next()) {
                     System.out.println("There are no requests available at this moment.");
-                }else{
+                } else {
                     System.out.println("request ID, passenger name, num of passengers, start location, destination");
                     do {
-                        System.out.println(
-                                rs.getInt("r.id") + ", " + rs.getString("p.name") + ", " + rs.getInt("r.passengers") + ", "
-                                        + rs.getString("r.start_location") + ", " + rs.getString("r.destination"));
+                        System.out.println(rs.getInt("r.id") + ", " + rs.getString("p.name") + ", "
+                                + rs.getInt("r.passengers") + ", " + rs.getString("r.start_location") + ", "
+                                + rs.getString("r.destination"));
                     } while (rs.next());
                 }
             }
@@ -819,7 +820,7 @@ public class Main {
         boolean user_choice_passed = true;
         String stmt;
         PreparedStatement pstmt;
-        if(!scan.hasNext()){
+        if (!scan.hasNext()) {
             return;
         }
 
@@ -987,31 +988,31 @@ public class Main {
 
         try {
             do {
-                    System.out.println("Please enter the minimum travelling distance.");
-                    if(!scan.hasNext()){
-                        return;
-                    }
-                    min_distance = Integer.parseInt(scan.nextLine());
+                System.out.println("Please enter the minimum travelling distance.");
+                if (!scan.hasNext()) {
+                    return;
+                }
+                min_distance = Integer.parseInt(scan.nextLine());
 
-                    if (min_distance < 0) {
-                        user_choice_passed = false;
-                        System.out.println("[ERROR] Invalid minimum distance.");
-                    }
+                if (min_distance < 0) {
+                    user_choice_passed = false;
+                    System.out.println("[ERROR] Invalid minimum distance.");
+                }
             } while (!user_choice_passed);
 
             user_choice_passed = true;
 
             do {
-                    System.out.println("Please enter the maximum travelling distance.");
-                    if(!scan.hasNext()){
-                        return;
-                    }
-                    max_distance = Integer.parseInt(scan.nextLine());
+                System.out.println("Please enter the maximum travelling distance.");
+                if (!scan.hasNext()) {
+                    return;
+                }
+                max_distance = Integer.parseInt(scan.nextLine());
 
-                    if (max_distance < 0 || max_distance <= min_distance) {
-                        user_choice_passed = false;
-                        System.out.println("[ERROR] Invalid maximum distance.");
-                    }
+                if (max_distance < 0 || max_distance <= min_distance) {
+                    user_choice_passed = false;
+                    System.out.println("[ERROR] Invalid maximum distance.");
+                }
             } while (!user_choice_passed);
 
             System.out.println("All input received. Querying Database.");
