@@ -57,7 +57,7 @@ public class Main {
                 try {
                     System.out.println("Please enter [1-4]");
                     String a_choice = scan.nextLine();
-                    if(a_choice.isEmpty()){
+                    if(a_choice.isEmpty() || a_choice == " "){
                         return;
                     }
                     choice = Integer.parseInt(a_choice);
@@ -103,7 +103,11 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-5]");
-                    choice = Integer.parseInt(scan.nextLine());
+                    String a_choice = scan.nextLine();
+                    if(a_choice.isEmpty() || a_choice == " "){
+                        return;
+                    }
+                    choice = Integer.parseInt(a_choice);
                     if (choice < 1 || choice > 5)
                         throw new Exception();
                     break;
@@ -201,7 +205,11 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-4]");
-                    choice = Integer.parseInt(scan.nextLine());
+                    String a_choice = scan.nextLine();
+                    if(a_choice.isEmpty() || a_choice == " "){
+                        return;
+                    }
+                    choice = Integer.parseInt(a_choice);
                     if (choice < 1 || choice > 4)
                         throw new Exception();
                     if (choice == 4)
@@ -232,7 +240,6 @@ public class Main {
                     break;
 
                 } catch (Exception e) {
-                    e.printStackTrace();
                     System.out.println("[ERROR] Invalid input.");
                 }
             }
@@ -263,7 +270,11 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-2]");
-                    choice = Integer.parseInt(scan.nextLine());
+                    String a_choice = scan.nextLine();
+                    if(a_choice.isEmpty() || a_choice == " "){
+                        return;
+                    }
+                    choice = Integer.parseInt(a_choice);
                     if (choice < 1 || choice > 2)
                         throw new Exception();
                     break;
