@@ -103,8 +103,10 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-5]");
-                    String a_choice = scan.nextLine();
-                    if(a_choice.isEmpty() || a_choice == " "){
+                    String a_choice;
+                    if(scan.hasNext()){
+                        a_choice = scan.nextLine();
+                    }else{
                         return;
                     }
                     choice = Integer.parseInt(a_choice);
@@ -146,7 +148,13 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-3].");
-                    choice = Integer.parseInt(scan.nextLine());
+                    String a_choice;
+                    if(scan.hasNext()){
+                        a_choice = scan.nextLine();
+                    }else{
+                        return;
+                    }
+                    choice = Integer.parseInt(a_choice);
                     if (choice != 1 && choice != 2 && choice != 3)
                         throw new Exception();
                     break;
@@ -205,8 +213,10 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-4]");
-                    String a_choice = scan.nextLine();
-                    if(a_choice.isEmpty() || a_choice == " "){
+                    String a_choice;
+                    if(scan.hasNext()){
+                        a_choice = scan.nextLine();
+                    }else{
                         return;
                     }
                     choice = Integer.parseInt(a_choice);
@@ -270,8 +280,10 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-2]");
-                    String a_choice = scan.nextLine();
-                    if(a_choice.isEmpty() || a_choice == " "){
+                    String a_choice;
+                    if(scan.hasNext()){
+                        a_choice = scan.nextLine();
+                    }else{
                         return;
                     }
                     choice = Integer.parseInt(a_choice);
