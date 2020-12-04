@@ -826,7 +826,7 @@ public class Main {
 
                 if (!rs.next() || rid < 0) {
                     System.out.println("[ERROR] The request id is incorrect or the request have been taken.");
-                    user_choice_passed = false;
+                    return;
                 } else break;
 
             } while (!user_choice_passed);
@@ -962,35 +962,31 @@ public class Main {
         try {
             do {
                     System.out.println("Please enter the minimum travelling distance.");
-                    if(!scan.hasNext()){
-                        return;
+                    if(scan.hasNext()){
+                        min_distance = Integer.parseInt(scan.nextLine());
                     }
-                    min_distance = Integer.parseInt(scan.nextLine());
 
                     if (min_distance < 0) {
                         user_choice_passed = false;
                         System.out.println("[ERROR] Invalid minimum distance.");
-                    }
+                    } else break;
             } while (!user_choice_passed);
 
             user_choice_passed = true;
 
             do {
                     System.out.println("Please enter the maximum travelling distance.");
-                    if(!scan.hasNext()){
-                        return;
+                    if(scan.hasNext()){
+                        max_distance = Integer.parseInt(scan.nextLine());
                     }
-                    max_distance = Integer.parseInt(scan.nextLine());
 
                     if (max_distance < 0 || max_distance <= min_distance) {
                         user_choice_passed = false;
                         System.out.println("[ERROR] Invalid maximum distance.");
-                    }
+                    } else break;
             } while (!user_choice_passed);
-
-            System.out.println("All input received. Querying Database.");
-
         } catch (Exception e) {
+            System.out.println("[ERROR] " + e);
             return;
         }
 
