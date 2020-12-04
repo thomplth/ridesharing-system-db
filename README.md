@@ -14,3 +14,19 @@ Name: , SID:  <br/>
 - [x] 6
 - [x] 7
 - [x] 8
+
+### Debugging ###
+### System Administrator
+- [x] Create tables
+- [x] Delete tables
+- [x] Load data
+- [x] Check Data
+### Passenger
+- [x] Request a ride
+- [ ] Check trip record
+### Driver
+- [ ] Search requests
+- [ ] Take a request
+- [ ] Finish a trip
+### Manager
+- [ ] List all finished trips with traveling distances within a range
