@@ -789,7 +789,7 @@ public class Main {
                 stmt = "SELECT r.id, p.name, r.passengers, r.start_location, r.destination FROM request r, driver d, vehicle v, passenger p, taxi_stop t "
                         + "WHERE d.vehicle_id = v.id AND r.passenger_id = p.id AND r.start_location = t.name AND d.id = ? "
                         + "AND r.taken = 'N' AND d.driving_years >= r.driving_years AND LOWER(v.model) LIKE LOWER(CONCAT('%', r.model, '%')) "
-                        + "AND v.seats >= r.passengers AND (? >= (SQRT(POWER(t.location_x-?,2) + POWER(t.location_y-?,2))))";
+                        + "AND v.seats >= r.passengers AND (SQRT(POWER(t.location_x-?,2) + POWER(t.location_y-?,2))) <= ?";
                 pstmt = conn.prepareStatement(stmt);
                 pstmt.setInt(1, did);
                 pstmt.setInt(2, x);
