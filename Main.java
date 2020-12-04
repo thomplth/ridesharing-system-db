@@ -1034,7 +1034,7 @@ public class Main {
         }
 
         try {
-            psql = "SELECT t.id,d.name,p.name,t.start_location,t.destination,t.start_time,t.end_time FROM trip t, distancetable dt WHERE t.start_location = dt.start AND t.destination = dt.end AND dt.distance >= ? AND dt.distance <= ? LEFT JOIN driver d ON t.driver_id = d.id LEFT JOIN passenger p ON t.passenger_id = p.id;";
+            psql = "SELECT t.id,d.name,p.name,t.start_location,t.destination,t.start_time,t.end_time FROM trip t, distancetable dt,driver d, passenger p WHERE t.start_location = dt.start AND t.destination = dt.end AND dt.distance >= ? AND dt.distance <= ? AND t.driver_id = d.id AND t.passenger_id = p.id;";
 
             pstmt = conn.prepareStatement(psql);
             pstmt.setInt(1, min_distance);
