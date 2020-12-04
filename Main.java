@@ -547,7 +547,7 @@ public class Main {
                 if (passenger_num < 1 || passenger_num > 8) {
                     System.out.println("[ERROR] Invalid number of passengers.");
                     user_choice_passed = false;
-                }
+                } else break;
             } while (!user_choice_passed);
 
             user_choice_passed = true;
