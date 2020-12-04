@@ -944,7 +944,7 @@ public class Main {
                         }
                     } else
                         System.out.println("[ERROR] Please enter y/n");
-                } while (choice.equals("y") || choice.equals("n"));
+                } while (!choice.equals("y"));
             }
         } catch (Exception e) {
             e.printStackTrace();
