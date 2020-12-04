@@ -1023,7 +1023,7 @@ public class Main {
 
         ResultSet rs = null;
         PreparedStatement pstmt = null;
-        String psql = "IF NOT EXISTS distancetable CREATE VIEW distancetable AS SELECT ts1.name AS start, ts2.name AS end, SQRT(POWER(ts1.location_x - ts2.location_x,2)+POWER(ts1.location_y - ts2.location_y,2)) AS distance FROM taxi_stop ts1, taxi_stop ts2 WHERE ts1.name != ts2.name;";
+        String psql = "IF NOT EXISTS (SELECT * FROM distancetable) BEGIN CREATE VIEW distancetable AS SELECT ts1.name AS start, ts2.name AS end, SQRT(POWER(ts1.location_x - ts2.location_x,2)+POWER(ts1.location_y - ts2.location_y,2)) AS distance FROM taxi_stop ts1, taxi_stop ts2 WHERE ts1.name != ts2.name END;";
         int create_view = 0;
         try {
             Statement stmt = conn.createStatement();
@@ -1056,7 +1056,7 @@ public class Main {
             System.out.println("Something was wrong with the SQL query");
         }
         if (create_view == 1) {
-            psql = "IF EXISTS distancetable DROP VIEW distancetable;";
+            psql = "IF EXISTS (SELECT * FROM distancetable) BEGIN DROP VIEW distancetable END;";
             try {
                 pstmt = conn.prepareStatement(psql);
                 pstmt.executeUpdate();
