@@ -992,7 +992,6 @@ public class Main {
                         return;
                     }
                     min_distance = Integer.parseInt(scan.nextLine());
-                    System.out.println(min_distance);
 
                     if (min_distance < 0) {
                         user_choice_passed = false;
@@ -1023,7 +1022,7 @@ public class Main {
 
         ResultSet rs = null;
         PreparedStatement pstmt = null;
-        String psql = "CREATE OR REPLACE VIEW distancetable AS SELECT ts1.name AS start, ts2.name AS end, SQRT(POWER(ts1.location_x - ts2.location_x,2)+POWER(ts1.location_y - ts2.location_y,2)) AS distance FROM taxi_stop ts1, taxi_stop ts2 WHERE ts1.name != ts2.name;";
+        String psql = "CREATE OR REPLACE VIEW distancetable AS SELECT ts1.name AS start, ts2.name AS end, ABS(ts1.location_x - ts2.location_x)+ABS(ts1.location_y - ts2.location_y) AS distance FROM taxi_stop ts1, taxi_stop ts2 WHERE ts1.name != ts2.name;";
         int create_view = 0;
         try {
             Statement stmt = conn.createStatement();
