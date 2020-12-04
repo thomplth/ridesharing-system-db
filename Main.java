@@ -184,7 +184,7 @@ public class Main {
 
                     break;
                 } catch (SQLException sqle) {
-                    System.out.println("[ERROR] Driver does not exist");
+                    System.out.println("[ERROR] Passenger does not exist");
                 } catch (Exception ie) {
                     System.out.println("[ERROR] Invalid input");
                 }
@@ -232,6 +232,9 @@ public class Main {
                     while (true) {
                         try {
                             System.out.println("Please enter your ID.");
+                            if(!scan.hasNext()){
+                                return;
+                            }
                             id = Integer.parseInt(scan.nextLine());
                             if (id <= 0)
                                 throw new Exception();
@@ -761,7 +764,7 @@ public class Main {
 
             do {
                 System.out.println("Please enter the maximum distance from you to the passenger.");
-                distance = Integer.parseInt(scan.nextLine());;
+                distance = Integer.parseInt(scan.nextLine());
 
                 if (distance <= 0)
                     System.out.println("[ERROR] Distance should be greater than 0");
@@ -835,7 +838,7 @@ public class Main {
             do {
                 System.out.println("Please enter the request ID");
                 try {
-                    rid = Integer.parseInt(scan.nextLine());;
+                    rid = Integer.parseInt(scan.nextLine());
                 } catch (Exception nfe) {
                     System.out.println("[ERROR] The request id should be a number.");
                     user_choice_passed = false;
@@ -990,7 +993,7 @@ public class Main {
             do {
                 try {
                     System.out.println("Please enter the minimum travelling distance.");
-                    min_distance = Integer.parseInt(scan.nextLine());;
+                    min_distance = Integer.parseInt(scan.nextLine());
 
                     if (min_distance < 0) {
                         user_choice_passed = false;
@@ -1008,7 +1011,7 @@ public class Main {
             do {
                 try {
                     System.out.println("Please enter the maximum travelling distance.");
-                    max_distance = Integer.parseInt(scan.nextLine());;
+                    max_distance = Integer.parseInt(scan.nextLine());
 
                     if (max_distance < 0 || max_distance <= min_distance) {
                         user_choice_passed = false;
