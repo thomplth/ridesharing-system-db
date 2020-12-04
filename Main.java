@@ -856,7 +856,7 @@ public class Main {
 
             } while (!user_choice_passed);
 
-            stmt = "SELECT * FROM driver d, vehicle v, request r "
+            stmt = "SELECT * FROM driver d, vehicle v, request r, passenger p "
                     + "WHERE d.vehicle_id = v.id AND r.passenger_id = p.id AND d.id = ? AND r.id = ? "
                     + "AND r.taken = 'N' AND v.seats >= r.passengers AND LOWER(v.model) LIKE LOWER(CONCAT('%', r.model, '%')) "
                     + "AND d.driving_years >= r.driving_years";
@@ -910,7 +910,6 @@ public class Main {
                 System.out.println(rs.getInt(1) + ", " + rs.getString(2) + ", " + rs.getString(3));
             }
         } catch (Exception e) {
-            e.printStackTrace();
             e.printStackTrace();
         }
     }
@@ -984,9 +983,6 @@ public class Main {
         int min_distance = 0;
         int max_distance = 0;
         boolean user_choice_passed = true;
-        if(!scan.hasNext()){
-            return;
-        }
 
         try {
             do {
@@ -1007,6 +1003,9 @@ public class Main {
 
             do {
                     System.out.println("Please enter the maximum travelling distance.");
+                    if(!scan.hasNext()){
+                        return;
+                    }
                     max_distance = Integer.parseInt(scan.nextLine());
 
                     if (max_distance < 0 || max_distance <= min_distance) {
@@ -1018,7 +1017,6 @@ public class Main {
             System.out.println("All input received. Querying Database.");
 
         } catch (Exception e) {
-            e.printStackTrace();
             return;
         }
 
