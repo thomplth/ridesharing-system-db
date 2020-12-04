@@ -969,6 +969,9 @@ public class Main {
         int min_distance = 0;
         int max_distance = 0;
         boolean user_choice_passed = false;
+        if(!scan.hasNext()){
+            return;
+        }
 
         try {
             do {
