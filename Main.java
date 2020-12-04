@@ -939,8 +939,8 @@ public class Main {
 
                             System.out.println("Trip ID, Passenger name, Start, End, Fee");
                             System.out
-                                    .println(rs.getInt(1) + ", " + rs.getString(2) + ", " + rs.getString(sdf.format(3))
-                                            + ", " + rs.getString(sdf.format(4)) + ", " + rs.getInt(5));
+                                    .println(rs.getInt(1) + ", " + rs.getString(2) + ", " + rs.getTimestamp(3)
+                                            + ", " + rs.getTimestamp(4) + ", " + rs.getInt(5));
                         }
                     } else
                         System.out.println("[ERROR] Please enter y/n");
