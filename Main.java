@@ -649,7 +649,6 @@ public class Main {
         ResultSet rs = null;
         PreparedStatement pstmt = null;
         try {
-            
             do {
                 System.out.println("Please enter the start date. (YYYY-MM-DD)");
                 if (scan.hasNext()) {
@@ -749,6 +748,7 @@ public class Main {
             } while (distance <= 0);
         } catch (Exception e) {
             System.out.println("[ERROR] " + e);
+            return;
         }
 
         try {
@@ -777,7 +777,7 @@ public class Main {
 
                 if (!rs.next()){
                     System.out.println("There are no requests available at this moment.");
-                }else{
+                } else {
                     System.out.println("request ID, passenger name, num of passengers, start location, destination");
                     do {
                         System.out.println(
@@ -796,9 +796,6 @@ public class Main {
         boolean user_choice_passed = true;
         String stmt;
         PreparedStatement pstmt;
-        if(!scan.hasNext()){
-            return;
-        }
 
         try {
 
@@ -830,7 +827,7 @@ public class Main {
                 if (!rs.next() || rid < 0) {
                     System.out.println("[ERROR] The request id is incorrect or the request have been taken.");
                     user_choice_passed = false;
-                }
+                } else break;
 
             } while (!user_choice_passed);
 
@@ -845,7 +842,7 @@ public class Main {
             rs = pstmt.executeQuery();
 
             if (!rs.next()) {
-                System.out.println("You do not satisfy all the criteria of the request");
+                System.out.println("[ERROR] You do not satisfy all the criteria of the request");
                 return;
             } else {
                 stmt = "SELECT p.id, p.name, r.start_location, r.destination FROM request r, passenger p "
@@ -950,6 +947,7 @@ public class Main {
                 } while (choice.equals("y") || choice.equals("n"));
             }
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("[ERROR] " + e);
         }
     }
