@@ -1029,11 +1029,12 @@ public class Main {
             Statement stmt = conn.createStatement();
             create_view = stmt.executeUpdate(psql);
         } catch (SQLException sqle) {
+            sqle.printStackTrace();
             System.out.println("Unable to create view.");
         }
 
         try {
-            psql = "SELECT t.id,d.name,p.name,t.start_location,t.destination,t.start_time,t.end_time FROM trip t LEFT JOIN driver d ON t.driver_id = d.id LEFT JOIN passenger p ON t.passenger_id = p.id LEFT JOIN distancetable dt ON t.start_location = dt.start AND t.destination = dt.end WHERE dt.distance >= ? AND dt.distance <= ?;";
+            psql = "SELECT t.id,d.name,p.name,t.start_location,t.destination,t.start_time,t.end_time FROM trip t LEFT JOIN driver d ON t.driver_id = d.id LEFT JOIN passenger p ON t.passenger_id = p.id LEFT JOIN distancetable dt ON t.start_location = dt.start AND t.destination = dt.end AND dt.distance >= ? AND dt.distance <= ?;";
 
             pstmt = conn.prepareStatement(psql);
             pstmt.setInt(1, min_distance);
