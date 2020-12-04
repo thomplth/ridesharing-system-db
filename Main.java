@@ -56,9 +56,14 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-4]");
+                    String a_choice = scan.nextLine();
+                    if(a_choice.isEmpty()){
+                        return;
+                    }
                     choice = Integer.parseInt(scan.nextLine());
-                    if (choice < 1 || choice > 5)
+                    if (choice < 1 || choice > 5){
                         throw new Exception();
+                    }
                     break;
                 } catch (Exception e) {
                     System.out.println("[ERROR] Invalid input.");
@@ -263,7 +268,6 @@ public class Main {
                         throw new Exception();
                     break;
                 } catch (Exception e) {
-                    e.printStackTrace();
                     System.out.println("[ERROR] Invalid input.");
                 }
             }
@@ -590,7 +594,6 @@ public class Main {
 
         } catch (Exception e) {
             e.printStackTrace();
-            e.printStackTrace();
             return;
         }
 
@@ -719,8 +722,9 @@ public class Main {
 
         try {
             System.out.println("Please enter the coordinates of your location.");
-            x = Integer.parseInt(scan.nextLine());;
-            y = Integer.parseInt(scan.nextLine());;
+            String[] coords = scan.nextLine().split(" ");
+            x = Integer.parseInt(coords[0]);
+            y = Integer.parseInt(coords[1]);
 
             do {
                 System.out.println("Please enter the maximum distance from you to the passenger.");
@@ -758,16 +762,16 @@ public class Main {
                 pstmt.setInt(4, distance);
                 rs = pstmt.executeQuery();
 
-                if (!rs.next())
+                if (!rs.next()){
                     System.out.println("There are no requests available at this moment.");
-                else
+                }else{
                     System.out.println("request ID, passenger name, num of passengers, start location, destination");
-
-                do {
-                    System.out.println(
-                            rs.getInt("r.id") + ", " + rs.getString("p.name") + ", " + rs.getInt("r.passengers") + ", "
-                                    + rs.getString("r.start_location") + ", " + rs.getString("r.destination"));
-                } while (rs.next());
+                    do {
+                        System.out.println(
+                                rs.getInt("r.id") + ", " + rs.getString("p.name") + ", " + rs.getInt("r.passengers") + ", "
+                                        + rs.getString("r.start_location") + ", " + rs.getString("r.destination"));
+                    } while (rs.next());
+                }
             }
         } catch (Exception exp) {
             System.out.println("Error: " + exp);
