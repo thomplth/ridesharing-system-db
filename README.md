@@ -4,7 +4,7 @@ Name: WONG Man Yeung,    SID: 1155125184 <br/>
 Name: LAM Tak Hing,	     SID: 1155131289 <br/>
 Name: , SID:  <br/>
 
-### Test Cases ###
+# Test Cases 
 - [x] 0
 - [x] 1
 - [x] 2
@@ -15,18 +15,18 @@ Name: , SID:  <br/>
 - [x] 7
 - [x] 8
 
-### Debugging ###
-### System Administrator
+# Debugging 
+### System Administrator ###
 - [x] Create tables
 - [x] Delete tables
 - [x] Load data
 - [x] Check Data
-### Passenger
+### Passenger ###
 - [x] Request a ride
 - [ ] Check trip record
-### Driver
+### Driver ###
 - [ ] Search requests
 - [ ] Take a request
 - [ ] Finish a trip
-### Manager
+### Manager ###
 - [ ] List all finished trips with traveling distances within a range
