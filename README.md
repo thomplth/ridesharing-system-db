@@ -1,10 +1,9 @@
 # Ridesharing System
-Group 40 <br/>
-Name: WONG Man Yeung,     SID: 1155125184 <br/>
-Name: LAM Tak Hing,	      SID: 1155131289 <br/>
-Name: LI Pui Lam Precila, SID: 1155133629 <br/>
+### How to run
+`java -cp .:mysql-connector-java-5.1.47.jar Main`
+`python3 grading.py --submission group40.zip`
 
-# Test Cases 
+### Test Cases 
 - [x] 0
 - [x] 1
 - [x] 2
@@ -15,18 +14,18 @@ Name: LI Pui Lam Precila, SID: 1155133629 <br/>
 - [x] 7
 - [x] 8
 
-# Debugging 
-### System Administrator ###
+### Debugging 
+1. System Administrator
 - [x] Create tables
 - [x] Delete tables
 - [x] Load data
 - [x] Check Data
-### Passenger ###
+2. Passenger 
 - [x] Request a ride
 - [x] Check trip record
-### Driver ###
+3. Driver
 - [x] Search requests
 - [x] Take a request
-- [ ] Finish a trip
-### Manager ###
+- [x] Finish a trip
+4. Manager
 - [x] List all finished trips with traveling distances within a range
