@@ -1,6 +1,6 @@
 # Ridesharing System
 ### How to run
-`java -cp .:mysql-connector-java-5.1.47.jar Main`
+`java -cp .:mysql-connector-java-5.1.47.jar Main`<br/>
 `python3 grading.py --submission group40.zip`
 
 ### Test Cases 
