@@ -60,7 +60,7 @@ public class Main {
                     if(a_choice.isEmpty()){
                         return;
                     }
-                    choice = Integer.parseInt(scan.nextLine());
+                    choice = Integer.parseInt(a_choice);
                     if (choice < 1 || choice > 5){
                         throw new Exception();
                     }
