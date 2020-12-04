@@ -900,14 +900,14 @@ public class Main {
             pstmt = conn.prepareStatement(stmt);
             pstmt.setInt(1, did);
             ResultSet rs = pstmt.executeQuery();
-            int tid = rs.getInt(1);
-            java.sql.Timestamp start = rs.getTimestamp(3);
 
             if (!rs.next())
                 System.out.println("[ERROR] You don't have unfinished trip.");
             else {
+                int tid = rs.getInt(1);
+                java.sql.Timestamp start = rs.getTimestamp(3);
                 System.out.println("Trip ID, Passenger ID, Start");
-                System.out.println(rs.getInt(1) + ", " + rs.getInt(2) + ", " + start);
+                System.out.println(tid + ", " + rs.getInt(2) + ", " + start);
                 do {
                     System.out.println("Do you wish to finish the trip? [y/n]");
                     choice = scan.nextLine();
