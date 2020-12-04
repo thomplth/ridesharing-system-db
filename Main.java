@@ -45,10 +45,6 @@ public class Main {
     public static void menu(Connection conn) {
         int choice = 0;
 
-        if(!scan.hasNext()){
-            return;
-        }
-
         while (choice != 5) {
             System.out.println("Welcome! Who are you?");
             System.out.println("1. An administrator");
@@ -60,6 +56,9 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-4]");
+                    if(!scan.hasNext()){
+                        return;
+                    }
                     String a_choice = scan.nextLine();
                     choice = Integer.parseInt(a_choice);
                     if (choice < 1 || choice > 5){
@@ -984,32 +983,29 @@ public class Main {
     public static void listTrips() {
         int min_distance = 0;
         int max_distance = 0;
-        boolean user_choice_passed = false;
+        boolean user_choice_passed = true;
         if(!scan.hasNext()){
             return;
         }
 
         try {
             do {
-                try {
                     System.out.println("Please enter the minimum travelling distance.");
+                    if(!scan.hasNext()){
+                        return;
+                    }
                     min_distance = Integer.parseInt(scan.nextLine());
+                    System.out.println(min_distance);
 
                     if (min_distance < 0) {
                         user_choice_passed = false;
                         System.out.println("[ERROR] Invalid minimum distance.");
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    user_choice_passed = false;
-                    System.out.println("[ERROR] Invalid minimum distance.");
-                }
             } while (!user_choice_passed);
 
             user_choice_passed = true;
 
             do {
-                try {
                     System.out.println("Please enter the maximum travelling distance.");
                     max_distance = Integer.parseInt(scan.nextLine());
 
@@ -1017,17 +1013,11 @@ public class Main {
                         user_choice_passed = false;
                         System.out.println("[ERROR] Invalid maximum distance.");
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    user_choice_passed = false;
-                    System.out.println("[ERROR] Invalid maximum distance.");
-                }
             } while (!user_choice_passed);
 
             System.out.println("All input received. Querying Database.");
 
         } catch (Exception e) {
-            e.printStackTrace();
             e.printStackTrace();
             return;
         }
