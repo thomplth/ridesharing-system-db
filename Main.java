@@ -56,12 +56,12 @@ public class Main {
             while (true) {
                 try {
                     System.out.println("Please enter [1-4]");
-                    if (!scan.hasNext()) {
+                    if(!scan.hasNext()){
                         return;
                     }
                     String a_choice = scan.nextLine();
                     choice = Integer.parseInt(a_choice);
-                    if (choice < 1 || choice > 5) {
+                    if (choice < 1 || choice > 5){
                         throw new Exception();
                     }
                     break;
@@ -104,9 +104,9 @@ public class Main {
                 try {
                     System.out.println("Please enter [1-5]");
                     String a_choice;
-                    if (scan.hasNext()) {
+                    if(scan.hasNext()){
                         a_choice = scan.nextLine();
-                    } else {
+                    }else{
                         return;
                     }
                     choice = Integer.parseInt(a_choice);
@@ -149,9 +149,9 @@ public class Main {
                 try {
                     System.out.println("Please enter [1-3].");
                     String a_choice;
-                    if (scan.hasNext()) {
+                    if(scan.hasNext()){
                         a_choice = scan.nextLine();
-                    } else {
+                    }else{
                         return;
                     }
                     choice = Integer.parseInt(a_choice);
@@ -214,9 +214,9 @@ public class Main {
                 try {
                     System.out.println("Please enter [1-4]");
                     String a_choice;
-                    if (scan.hasNext()) {
+                    if(scan.hasNext()){
                         a_choice = scan.nextLine();
-                    } else {
+                    }else{
                         return;
                     }
                     choice = Integer.parseInt(a_choice);
@@ -228,7 +228,7 @@ public class Main {
                     while (true) {
                         try {
                             System.out.println("Please enter your ID.");
-                            if (!scan.hasNext()) {
+                            if(!scan.hasNext()){
                                 return;
                             }
                             id = Integer.parseInt(scan.nextLine());
@@ -284,9 +284,9 @@ public class Main {
                 try {
                     System.out.println("Please enter [1-2]");
                     String a_choice;
-                    if (scan.hasNext()) {
+                    if(scan.hasNext()){
                         a_choice = scan.nextLine();
-                    } else {
+                    }else{
                         return;
                     }
                     choice = Integer.parseInt(a_choice);
@@ -369,7 +369,6 @@ public class Main {
 
             System.out.println("Done! Tables are created!");
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("\n[ERROR] " + e);
         }
     }
@@ -397,7 +396,6 @@ public class Main {
 
             System.out.println("Done! Tables are deleted!");
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("\n[ERROR] " + e);
         }
     }
@@ -419,10 +417,8 @@ public class Main {
                 System.out.println("Data is loaded!");
                 break;
             } catch (FileNotFoundException fe) {
-                fe.printStackTrace();
                 System.out.println("\n[ERROR] Invalid folder path.");
             } catch (Exception e) {
-                e.printStackTrace();
                 System.out.println("\n[ERROR] Tables does not exist or files already loaded.");
                 break;
             }
@@ -449,7 +445,6 @@ public class Main {
                 System.out.println(tables_title[i] + ": " + counts[i]);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("[ERROR] " + e);
         }
     }
@@ -548,8 +543,7 @@ public class Main {
                 System.out.println("Please enter the number of passengers.");
                 if (scan.hasNext()) {
                     passenger_num = Integer.parseInt(scan.nextLine());
-                } else
-                    return;
+                } else return;
                 if (passenger_num < 1 || passenger_num > 8) {
                     System.out.println("[ERROR] Invalid number of passengers.");
                     user_choice_passed = false;
@@ -570,8 +564,7 @@ public class Main {
                 if (!rs.next() || start_location == "" || start_location == null) {
                     System.out.println("[ERROR] Start location not found.");
                     user_choice_passed = false;
-                } else
-                    user_choice_passed = true;
+                } else user_choice_passed = true;
             } while (!user_choice_passed);
 
             user_choice_passed = true;
@@ -593,24 +586,12 @@ public class Main {
                 if (!rs.next() || end_location == "" || end_location == null) {
                     System.out.println("[ERROR] Destination not found.");
                     user_choice_passed = false;
-                } else
-                    user_choice_passed = true;
+                } else user_choice_passed = true;
             } while (!user_choice_passed);
 
             // Choose model
             System.out.println("Please enter the model. (Press enter to skip)");
             car_model = scan.nextLine().toLowerCase();
-
-            /*
-             * 
-             * psql =
-             * "SELECT * FROM vehicle WHERE seats >= ? AND UPPER(model) LIKE UPPER(?);";
-             * pstmt = conn.prepareStatement(psql); pstmt.setInt(1, passenger_num);
-             * pstmt.setString(2, "%" + car_model + "%"); rs = pstmt.executeQuery();
-             * 
-             * if(!rs.next()){ System.out.println("[ERROR] Invalid model."); }
-             * 
-             */
 
             // Enter minimum driving year
 
@@ -622,16 +603,13 @@ public class Main {
                     throw new Exception("Wrong driver years!");
                 }
             }
-            System.out.println("All input received. Querying Database.");
-
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("[ERROR] " + e);
             return;
         }
 
         // At last, create the request if no errors exist
         try {
-
             psql = "SELECT COUNT(*) AS d_count FROM driver d, vehicle v WHERE v.seats >= ? AND driving_years >= ? AND UPPER(model) LIKE UPPER(?) AND d.vehicle_id = v.id;";
             pstmt = conn.prepareStatement(psql);
             pstmt.setInt(1, passenger_num);
@@ -641,7 +619,6 @@ public class Main {
 
             if (!rs.next()) {
                 System.out.println("There are no drivers that can take the request.");
-                return;
             } else {
                 psql = "INSERT INTO request (passenger_id, start_location,destination,model,passengers,taken,driving_years) VALUES (?,?,?,?,?,'N',?);";
                 pstmt = conn.prepareStatement(psql);
@@ -651,13 +628,14 @@ public class Main {
                 pstmt.setString(4, car_model);
                 pstmt.setInt(5, passenger_num);
                 pstmt.setInt(6, driver_years);
-                if (pstmt.executeUpdate() > 0) {
-                    System.out.println(
-                            "Your request is placed. " + rs.getInt(1) + " drivers are able to take the request.");
+                if (rs.getInt(1) == 0) {
+                    System.out.println("There are no drivers that can take the request.");
+                } else if (pstmt.executeUpdate() > 0) {
+                    System.out.println("Your request is placed. " + rs.getInt(1) + " drivers are able to take the request.");
                 }
             }
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
+            System.out.println("[ERROR] " + sqle);
         }
     }
 
@@ -671,39 +649,41 @@ public class Main {
         ResultSet rs = null;
         PreparedStatement pstmt = null;
         try {
-
+            
             do {
                 System.out.println("Please enter the start date. (YYYY-MM-DD)");
                 if (scan.hasNext()) {
                     start_date = scan.nextLine();
-                } else
-                    return;
+                } else return;
 
                 if (start_date == "" || start_date == null || !date.matcher(start_date).matches()) {
                     user_choice_passed = false;
                     System.out.println("[ERROR] Invalid start date.");
-                } else
-                    break;
+                } else break;
             } while (!user_choice_passed);
 
             user_choice_passed = true;
 
             do {
                 System.out.println("Please enter the end date. (YYYY-MM-DD)");
-                end_date = scan.nextLine();
+                if (scan.hasNext()) {
+                    end_date = scan.nextLine();
+                } else return;
 
                 if (end_date == "" || end_date == null || !date.matcher(start_date).matches()) {
                     user_choice_passed = false;
                     System.out.println("[ERROR] Invalid end date.");
-                } else
-                    break;
+                } else break;
             } while (!user_choice_passed);
 
             user_choice_passed = true;
 
             do {
                 System.out.println("Please enter the destination.");
-                end_location = scan.nextLine();
+                if (scan.hasNext()) {
+                    end_location = scan.nextLine();
+                } else return;
+
                 psql = "SELECT * FROM taxi_stop ts WHERE UPPER(ts.name) = UPPER(?);";
                 pstmt = conn.prepareStatement(psql);
                 pstmt.setString(1, end_location);
@@ -712,10 +692,10 @@ public class Main {
                 if (!rs.next() || end_location == "" || end_location == null) {
                     user_choice_passed = false;
                     System.out.println("[ERROR] Destination not found.");
-                }
+                } else break;
             } while (!user_choice_passed);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("[ERROR] " + e);
             return;
         }
 
@@ -745,9 +725,7 @@ public class Main {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Something was wrong with the SQL query");
-            e.printStackTrace();
+            System.out.println("[ERROR] " + e);
         }
     }
 
@@ -770,7 +748,6 @@ public class Main {
                     System.out.println("[ERROR] Distance should be greater than 0");
             } while (distance <= 0);
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("[ERROR] " + e);
         }
 
@@ -798,20 +775,19 @@ public class Main {
                 pstmt.setInt(4, distance);
                 rs = pstmt.executeQuery();
 
-                if (!rs.next()) {
+                if (!rs.next()){
                     System.out.println("There are no requests available at this moment.");
-                } else {
+                }else{
                     System.out.println("request ID, passenger name, num of passengers, start location, destination");
                     do {
-                        System.out.println(rs.getInt("r.id") + ", " + rs.getString("p.name") + ", "
-                                + rs.getInt("r.passengers") + ", " + rs.getString("r.start_location") + ", "
-                                + rs.getString("r.destination"));
+                        System.out.println(
+                                rs.getInt("r.id") + ", " + rs.getString("p.name") + ", " + rs.getInt("r.passengers") + ", "
+                                        + rs.getString("r.start_location") + ", " + rs.getString("r.destination"));
                     } while (rs.next());
                 }
             }
         } catch (Exception exp) {
-            exp.printStackTrace();
-            System.out.println("Error: " + exp);
+            System.out.println("[ERROR] " + exp);
         }
     }
 
@@ -820,7 +796,7 @@ public class Main {
         boolean user_choice_passed = true;
         String stmt;
         PreparedStatement pstmt;
-        if (!scan.hasNext()) {
+        if(!scan.hasNext()){
             return;
         }
 
@@ -912,7 +888,7 @@ public class Main {
                 System.out.println(rs.getInt(1) + ", " + rs.getString(2) + ", " + rs.getString(3));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("[ERROR] " + e);
         }
     }
 
@@ -974,8 +950,7 @@ public class Main {
                 } while (choice.equals("y") || choice.equals("n"));
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error" + e);
+            System.out.println("[ERROR] " + e);
         }
     }
 
@@ -988,31 +963,31 @@ public class Main {
 
         try {
             do {
-                System.out.println("Please enter the minimum travelling distance.");
-                if (!scan.hasNext()) {
-                    return;
-                }
-                min_distance = Integer.parseInt(scan.nextLine());
+                    System.out.println("Please enter the minimum travelling distance.");
+                    if(!scan.hasNext()){
+                        return;
+                    }
+                    min_distance = Integer.parseInt(scan.nextLine());
 
-                if (min_distance < 0) {
-                    user_choice_passed = false;
-                    System.out.println("[ERROR] Invalid minimum distance.");
-                }
+                    if (min_distance < 0) {
+                        user_choice_passed = false;
+                        System.out.println("[ERROR] Invalid minimum distance.");
+                    }
             } while (!user_choice_passed);
 
             user_choice_passed = true;
 
             do {
-                System.out.println("Please enter the maximum travelling distance.");
-                if (!scan.hasNext()) {
-                    return;
-                }
-                max_distance = Integer.parseInt(scan.nextLine());
+                    System.out.println("Please enter the maximum travelling distance.");
+                    if(!scan.hasNext()){
+                        return;
+                    }
+                    max_distance = Integer.parseInt(scan.nextLine());
 
-                if (max_distance < 0 || max_distance <= min_distance) {
-                    user_choice_passed = false;
-                    System.out.println("[ERROR] Invalid maximum distance.");
-                }
+                    if (max_distance < 0 || max_distance <= min_distance) {
+                        user_choice_passed = false;
+                        System.out.println("[ERROR] Invalid maximum distance.");
+                    }
             } while (!user_choice_passed);
 
             System.out.println("All input received. Querying Database.");
@@ -1029,8 +1004,7 @@ public class Main {
             Statement stmt = conn.createStatement();
             create_view = stmt.executeUpdate(psql);
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            System.out.println("Unable to create view.");
+            System.out.println("[ERROR] " + sqle);
         }
 
         try {
@@ -1053,8 +1027,7 @@ public class Main {
                 } while (rs.next());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Something was wrong with the SQL query");
+            System.out.println("[ERROR] " + e);
         }
         if (create_view == 1) {
             psql = "DROP VIEW IF EXISTS distancetable;";
@@ -1062,8 +1035,7 @@ public class Main {
                 pstmt = conn.prepareStatement(psql);
                 pstmt.executeUpdate();
             } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Cannot drop view.");
+                System.out.println("[ERROR] " + e);
             }
         }
     }
