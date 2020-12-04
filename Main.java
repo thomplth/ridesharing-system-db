@@ -4,7 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import java.sql.Connection;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -789,7 +789,7 @@ public class Main {
                 stmt = "SELECT r.id, p.name, r.passengers, r.start_location, r.destination FROM request r, driver d, vehicle v, passenger p, taxi_stop t "
                         + "WHERE d.vehicle_id = v.id AND r.passenger_id = p.id AND r.start_location = t.name AND d.id = ? "
                         + "AND r.taken = 'N' AND d.driving_years >= r.driving_years AND LOWER(v.model) LIKE LOWER(CONCAT('%', r.model, '%')) "
-                        + "AND v.seats >= r.passengers AND (? >= (ABS((t.location_x-?)) + ABS((t.location_y-?))))";
+                        + "AND v.seats >= r.passengers AND (? >= (SQRT(POWER(t.location_x-?,2) + POWER(t.location_y-?,2))))";
                 pstmt = conn.prepareStatement(stmt);
                 pstmt.setInt(1, did);
                 pstmt.setInt(2, x);
@@ -809,6 +809,7 @@ public class Main {
                 }
             }
         } catch (Exception exp) {
+            exp.printStackTrace();
             System.out.println("Error: " + exp);
         }
     }
@@ -883,7 +884,7 @@ public class Main {
                 String dest = rs.getString("r.destination");
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                java.util.Date now = new java.util.Date();
+                Date now = new Date();
                 stmt = "INSERT INTO trip (driver_id, passenger_id, start_location, destination, start_time, fee) "
                         + "VALUES (?, ?, ?, ?, ?, 0)";
                 pstmt = conn.prepareStatement(stmt);
@@ -942,7 +943,7 @@ public class Main {
                             return;
                         else {
                             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            java.util.Date now = new java.util.Date();
+                            Date now = new Date();
                             java.sql.Timestamp endt = new java.sql.Timestamp(now.getTime());
 
                             long duration = now.getTime() - start.getTime();
@@ -1053,7 +1054,6 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Something was wrong with the SQL query");
-            e.printStackTrace();
         }
         if (create_view == 1) {
             psql = "IF EXISTS distancetable DROP VIEW distancetable;";
@@ -1074,8 +1074,8 @@ public class Main {
         Date d2 = null;
 
         try {
-            d1 = (Date) format.parse(start); // not sure if the casting work
-            d2 = (Date) format.parse(end);
+            d1 = format.parse(start); // not sure if the casting work
+            d2 = format.parse(end);
         } catch (ParseException e) {
             System.out.println("Failed to compute duration.");
         }
