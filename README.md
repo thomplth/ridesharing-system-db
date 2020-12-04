@@ -23,10 +23,10 @@ Name: LI Pui Lam Precila, SID: 1155133629 <br/>
 - [x] Check Data
 ### Passenger ###
 - [x] Request a ride
-- [ ] Check trip record
+- [x] Check trip record
 ### Driver ###
-- [ ] Search requests
-- [ ] Take a request
+- [x] Search requests
+- [x] Take a request
 - [ ] Finish a trip
 ### Manager ###
-- [ ] List all finished trips with traveling distances within a range
+- [x] List all finished trips with traveling distances within a range
