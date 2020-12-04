@@ -45,6 +45,10 @@ public class Main {
     public static void menu(Connection conn) {
         int choice = 0;
 
+        if(!scan.hasNext()){
+            return;
+        }
+
         while (choice != 5) {
             System.out.println("Welcome! Who are you?");
             System.out.println("1. An administrator");
@@ -57,9 +61,6 @@ public class Main {
                 try {
                     System.out.println("Please enter [1-4]");
                     String a_choice = scan.nextLine();
-                    if(a_choice.isEmpty() || a_choice == " "){
-                        return;
-                    }
                     choice = Integer.parseInt(a_choice);
                     if (choice < 1 || choice > 5){
                         throw new Exception();
@@ -202,6 +203,9 @@ public class Main {
 
     public static void driver_menu() {
         int choice = 0, id = 0;
+        if(!scan.hasNext()){
+            return;
+        }
 
         while (choice != 4) {
             System.out.println("Driver, what would you like to do?");
@@ -539,6 +543,9 @@ public class Main {
         String psql = "";
         ResultSet rs = null;
         PreparedStatement pstmt = null;
+        if(!scan.hasNext()){
+            return;
+        }
 
         try {
             do {
@@ -661,6 +668,9 @@ public class Main {
         String psql = "";
         ResultSet rs = null;
         PreparedStatement pstmt = null;
+        if(!scan.hasNext()){
+            return;
+        }
 
         try {
             
@@ -806,6 +816,9 @@ public class Main {
         boolean user_choice_passed = true;
         String stmt;
         PreparedStatement pstmt;
+        if(!scan.hasNext()){
+            return;
+        }
 
         try {
 
